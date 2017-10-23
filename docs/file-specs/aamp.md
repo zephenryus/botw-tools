@@ -1,5 +1,7 @@
 # AAMP File Specification
 
+![AAMP File Structure](images/aamp/aamp-spec.png "AAMP File Structure")
+
 Number values are read in **Little Endian** even though the PowerPC and most Wii U files use Big Endian
 
 ## AAMP Header
@@ -48,7 +50,7 @@ The root node follows immediately after the header
 
 ```
          0001 0203 0405 0607
-00000000 XXXX XXXX XXXX XXXX
+00000000 F7AD DE69 2000 1000
 ```
 
 | Relative Address | Type | Size | Description |
@@ -75,3 +77,34 @@ The root node follows immediately after the header
 | UnknownString | 0x0f | desc |
 | UnknownUnsignedInt | 0x11 | desc |
 | String2 | 0x14 | desc |
+
+## AAMP Checksum
+
+Method for calculating a checksum to verify correct parsing:
+
+1. Get file total size in bytes (`0x0c`)
+2. Get total number of nodes (`0x18`, `0x1c` & `0x20`)
+3. Get data and string buffer sizes (`0x24` & `0x28`)
+4. Total the bytes
+  * 52 bytes for the AAMP header
+  * 12 bytes per root node
+  * 8 bytes per child node
+  
+### Example
+
+For example, `Lynel_Junior.bdrop`:
+
+```
+total file size:            1576 bytes
+total number of nodes:      146
+data buffer size:           32 bytes
+string buffer size:         320 bytes
+
+aamp header:                52 bytes
+1 root node * 12 bytes:     12 bytes
+145 nodes * 8 bytes:        1160 bytes
+data buffer:                32 bytes
+string buffer:              320 bytes
+
+total size:                 1576 bytes
+```
