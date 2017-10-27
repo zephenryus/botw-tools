@@ -4,7 +4,7 @@ AAMP files are compressed xml files.
 
 Number values are read in **Little Endian** even though the PowerPC and most Wii U files use Big Endian
 
-## AAMP File Layout
+### AAMP File Layout
 
 ![AAMP File Structure](images/aamp/aamp-spec.png "AAMP File Structure")
 
@@ -15,12 +15,17 @@ Number values are read in **Little Endian** even though the PowerPC and most Wii
 
 ## AAMP Header
 
+### Header Layout
+
+![AAMP Header Structure](images/aamp/aamp-header.png "AAMP Header Layout")
+
 ```
-         00 01  02 03  04 05  06 07  08 09  0a 0b  0c 0d  0e 0f
-00000000 41 41  4D 50  02 00  00 00  03 00  00 00  28 06  00 00
-00000010 00 00  00 00  04 00  00 00  01 00  00 00  10 00  00 00
-00000020 81 00  00 00  20 00  00 00  40 01  00 00  00 00  00 00
-00000030 78 6D  6C 00 
+         | 00 01  02 03  04 05  06 07  08 09  0a 0b  0c 0d  0e 0f |
+---------+--------------------------------------------------------+-----------------
+00000000 | 41 41  4D 50  02 00  00 00  03 00  00 00  28 06  00 00 | AAMP........(...
+00000010 | 00 00  00 00  04 00  00 00  01 00  00 00  10 00  00 00 | ................
+00000020 | 81 00  00 00  20 00  00 00  40 01  00 00  00 00  00 00 | .... ...@.......
+00000030 | 78 6D  6C 00                                           | xml.
 ```
 
 | Offset | Size (bytes) | Type | Description |
@@ -41,11 +46,40 @@ Number values are read in **Little Endian** even though the PowerPC and most Wii
 
 The root node follows immediately after the header
 
-## Root Node
+### Example
+
+`Lynel_Junior.bdrop`
+
+**Remember** all integers are stored in _Little Endian_ in AAMP files.
+
+| Name | Hex Value | Type | Value |
+|---|--:|:-:|---|
+| Signature | `41 41 4D 50` | string | `AAMP` |
+| Version | `02 00 00 00` | unsigned int 32 | `2` |
+| Unknown 0x08 | `03 00 00 00` | unsigned int 32 | `3` |
+| File Size | `28 06 00 00` | unsigned int 32 | `1576` |
+| Unknown 0x10 | `00 00 00 00` | Unknown |  |
+| File Extension Length | `04 00 00 00` | unsigned int 32 | `4` |
+| Root Nodes Count | `01 00 00 00` | unsigned int 32 | `1` |
+| Root Node Children Count | `10 00 00 00` | unsigned int 32 | `16` |
+| Remaining Nodes | `81 00 00 00` | unsigned int 32 | `129` |
+| Data Buffer Size | `20 00 00 00` | unsigned int 32 | `32` |
+| String Buffer Size | `40 01 00 00` | unsigned int 32 | `320` |
+| Unknown 0x2c | `00 00 00 00` | Unknown | |
+| File Extension | `78 6D 6C 00` | string | `xml`
+
+## Nodes
+
+### Node Buffer Layout
+
+![AAMP Node Buffer Structure](images/aamp/node-layout.png "AAMP Node Buffer Structure")
+
+### Root Node
 
 ```
-         00 01  02 03  04 05  06 07  08 09  0a 0b
-00000000 6C CB  F6 A4  03 00  00 00  03 00  10 00
+         | 00 01  02 03  04 05  06 07  08 09  0a 0b  0c 0d  0e 0f |
+---------+--------------------------------------------------------+-----------------
+00000000 | 6C CB  F6 A4  03 00  00 00  03 00  10 00               | l...........
 ```
 
 | Offset | Size | Type | Description |
@@ -55,11 +89,12 @@ The root node follows immediately after the header
 | `0x08` | 2 | Unsigned Int | Data offset relative to beginning node address |
 | `0x0a` | 2 | Unsigned Int | Child node count |
 
-## Node
+### Node
 
 ```
-         00 01  02 03  04 05  06 07
-00000000 F7 AD  DE 69  20 00  10 00
+         | 00 01  02 03  04 05  06 07  08 09  0a 0b  0c 0d  0e 0f |
+---------+--------------------------------------------------------+-----------------
+00000000 | F7 AD  DE 69  20 00  10 00                             | ...i ...
 ```
 
 | Offset | Size | Type | Description |
@@ -69,17 +104,17 @@ The root node follows immediately after the header
 | `0x06` | 1 | Unsigned Int | Child node count |
 | `0x07` | 1 | Unsigned Int | Node data type |
 
-## Node Data Types
+### Node Data Types
 
 Each node has a data type to determine how to correctly parse the node value. If a node's child count is greater than 0
 it is _always_ a node regardless of the data type indicated.
 
 | Data Type | Value | Node Size (bytes) | Description |
 |---|--:|:-:|---|
-| Node | `0x00` | 8 | The current node has child nodes |
+| Node | `0x00` | 4 | The current node has child nodes |
 | Boolean | `0x00` | | `true` or `false` |
-| Float | `0x01` | 8 | Floating-point number |
-| Int | `0x02` | 8 | Integer |
+| Float | `0x01` | 4 | [Half Precision Floating-point number](https://en.wikipedia.org/wiki/Half-precision_floating-point_format) |
+| Int | `0x02` | 4 | 16-bit Integer |
 | Vector2 | `0x03` | | Vector array with two floating-point numbers `x`, `y` |
 | Vector3 | `0x04` | | Vector array with three floating-point numbers `x`, `y`, `z` |
 | Vector4 | `0x06` | | Vector array with four floating-point numbers `x`, `y`, `z`, `w` |
