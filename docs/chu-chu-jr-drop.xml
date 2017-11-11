@@ -1,0 +1,146 @@
+<value attackPower="2" boundingForTraverse="1.093903f" bugMask="3" cursorOffsetY="0.9f" enemyRank="1" generalLife="12" instSize="196532" pictureBookLiveSpot1="-1" pictureBookLiveSpot2="-1" pictureBookSpecialDrop="-1" sortKey="102" systemIsGetItemSelf="false">
+      <aabbMax X="0.560331f" Y="0.720051f" Z="0.604304f" />
+      <aabbMin X="-0.560331f" Y="-0.373852f" Z="-0.593722f" />
+      <bfres type="string">Enemy_Chuchu_Junior</bfres>
+      <drops>
+        <Normal type="array">
+          <value type="string">Item_Enemy_17</value>
+        </Normal>
+        <Normal2 type="array">
+          <value type="string">Item_Enemy_17</value>
+        </Normal2>
+      </drops>
+      <elink type="string">Enemy_Chuchu_Ice_Junior</elink>
+      <homeArea type="array">
+        <value>
+          <name type="string">GerudoHighlands</name>
+        </value>
+        <value>
+          <name type="string">HeburaMountains</name>
+        </value>
+        <value>
+          <name type="string">CentralHyrule</name>
+        </value>
+      </homeArea>
+      <mainModel type="string">Chuchu_Ice_Junior</mainModel>
+      <name type="string">Enemy_Chuchu_Ice_Junior</name>
+      <profile type="string">GelEnemy</profile>
+      <slink type="string">Enemy_Chuchu_Ice_Junior</slink>
+      <systemSameGroupActorName type="string">Enemy_Chuchu_Ice_Junior</systemSameGroupActorName>
+      <tags tag00336c07="3369991" tag0814022a="135529002" tag16a3afed="379826157" tag35960905="899025157" tag613df80a="1631451146" tag994aef4b="-1723142325" tagb0c9e79a="-1328945254" />
+      <yLimitAlgorithm type="string">NoLimit</yLimitAlgorithm>
+    </value>
+
+<data>
+	8
+	0
+	1
+	0
+	0
+	0
+	0
+	17096
+	0
+	16880
+</data>
+
+<strings>
+	Normal
+	Normal2
+	Burnout
+	Burnout2
+	Iced
+	Iced2
+	Electronic
+	Electronic2
+	Item_Enemy_40 		// Chuchu Jelly
+	Item_Enemy_15 		// Red Chuchu Jelly
+	Item_Enemy_17 		// White Chuchu Jelly
+	Item_Enemy_16 		// Yellow Chuchu Jelly
+</strings>
+
+<root-node id="6ccbf6a4">
+	<node id="f7adde69" address="0x0040" first-child-offset="0x0012" first-child="0x0088" child-count="9">
+		<node id="b466c697" address="0x0088" type="Int">130</node>
+		<node id="b19dd8bd" address="0x0090" type="Actor">85 00</node>
+		<node id="0bccd142" address="0x0098" type="Actor">85 00</node>
+		<node id="9dfcd635" address="0x00a0" type="Actor">85 00</node>
+		<node id="3e69b2ab" address="0x00a8" type="Actor">85 00</node>
+		<node id="a859b5dc" address="0x00b0" type="Actor">86 00</node>
+		<node id="1208bc45" address="0x00b8" type="Actor">86 00</node>
+		<node id="8438bb32" address="0x00c0" type="Actor">86 00</node>
+		<node id="152504a2" address="0x00c8" type="Actor">87 00</node>
+	</node>
+	<node id="d26d2926" address="0x0048" first-child-offset="0x0022" first-child="0x00d0" child-count="7">
+		<node id="b78496c5" address="0x00d0" type="Int">113</node>
+		<node id="eebb9bf9" address="0x00d8" type="Int">111</node>
+		<node id="fd92ad08" address="0x00e0" type="Int">110</node>
+		<node id="b3d62cd2" address="0x00e8" type="Int">108</node>
+		<node id="c82030be" address="0x00f0" type="Int">105</node>
+		<node id="0270c8c6" address="0x00f8" type="Actor">7e 00</node>
+		<node id="6ec61a7e" address="0x0100" type="Float">67 00</node>
+	</node>
+	<node id="98242e72" address="0x0050" first-child-offset="0x002e" first-child="0x0108" child-count="7">
+		<node id="b78496c5" address="0x0108" type="Int">99</node>
+		<node id="eebb9bf9" address="0x0110" type="Int">97</node>
+		<node id="fd92ad08" address="0x0118" type="Int">96</node>
+		<node id="b3d62cd2" address="0x0120" type="Int">94</node>
+		<node id="c82030be" address="0x0128" type="Int">91</node>
+		<node id="0270c8c6" address="0x0130" type="Actor">70 00</node>
+		<node id="6ec61a7e" address="0x0138" type="Float">5a 00</node>
+	</node>
+	<node id="48a0570b" address="0x0058" first-child-offset="0x003a" first-child="0x0140" child-count="7">
+		<node></node>
+		<node></node>
+		<node></node>
+		<node></node>
+		<node></node>
+		<node></node>
+		<node></node>
+	</node>
+	<node id="0f20d962" address="0x0060" first-child-offset="0x0046" first-child="0x24a" child-count="7">
+		<node></node>
+		<node></node>
+		<node></node>
+		<node></node>
+		<node></node>
+		<node></node>
+		<node></node>
+	</node>
+	<node id="71879cdf" address="0x0068" first-child-offset="0x0052" first-child="0x01b0" child-count="7">
+		<node></node>
+		<node></node>
+		<node></node>
+		<node></node>
+		<node></node>
+		<node></node>
+		<node></node>
+	</node>
+	<node id="2063083d" address="0x0070" first-child-offset="0x005e" first-child="0x01e8" child-count="7">
+		<node></node>
+		<node></node>
+		<node></node>
+		<node></node>
+		<node></node>
+		<node></node>
+		<node></node>
+	</node>
+	<node id="8e333251" address="0x0078" first-child-offset="0x006a" first-child="0x0220" child-count="7">
+		<node></node>
+		<node></node>
+		<node></node>
+		<node></node>
+		<node></node>
+		<node></node>
+		<node></node>
+	</node>
+	<node id="19228410" address="0x0080" first-child-offset="0x0076" first-child="0x0258" child-count="7">
+		<node></node>
+		<node></node>
+		<node></node>
+		<node></node>
+		<node></node>
+		<node></node>
+		<node></node>
+	</node>
+</root-node>

@@ -19,15 +19,6 @@ Number values are read in **Little Endian** even though the PowerPC and most Wii
 
 ![AAMP Header Structure](images/aamp/aamp-header.png "AAMP Header Layout")
 
-```
-         | 00 01  02 03  04 05  06 07  08 09  0a 0b  0c 0d  0e 0f |
----------+--------------------------------------------------------+-----------------
-00000000 | 41 41  4D 50  02 00  00 00  03 00  00 00  28 06  00 00 | AAMP........(...
-00000010 | 00 00  00 00  04 00  00 00  01 00  00 00  10 00  00 00 | ................
-00000020 | 81 00  00 00  20 00  00 00  40 01  00 00  00 00  00 00 | .... ...@.......
-00000030 | 78 6D  6C 00                                           | xml.
-```
-
 | Offset | Size (bytes) | Type | Description |
 |--:|:-:|---|---|
 | `0x00` | 4 | String | AAMP file signature (magic) `41 41 4D 50` or "AAMP" |
@@ -100,9 +91,11 @@ The root node follows immediately after the header
 | Offset | Size | Type | Description |
 |--:|:-:|---|---|
 | `0x00` | 4 | Unsigned Int | Node ID. |
-| `0x04` | 2 | Unsigned Int | Data offset relative to beginning node address |
+| `0x04` | 2 | Unsigned Int | Offset to first child node in bytes |
 | `0x06` | 1 | Unsigned Int | Child node count |
 | `0x07` | 1 | Unsigned Int | Node data type |
+
+The offset is calculated by multiplying the number of bytes by 4 and adding it to the node address
 
 ### Node Data Types
 
