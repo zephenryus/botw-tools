@@ -148,3 +148,8 @@ string buffer:            + 320   bytes
                          ---------------
 total size:                 1576  bytes
 ```
+
+## Sources and Resources
+- [Custom Mario Kart Wiki](http://mk8.tockdom.com/wiki/AAMP_(File_Format))
+- [jam1garner aamp2xml](https://github.com/jam1garner/aamp2xml/blob/master/AAMP_docs.txt)
+- [MrCheeze aamp.py](https://github.com/MrCheeze/botw-tools/blob/master/aamp.py)
