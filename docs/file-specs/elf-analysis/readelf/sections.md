@@ -1,4 +1,5 @@
-## Section Headers:
+## Section Headers
+
 There are 37 section headers, starting at offset 0x34:
 
 | Nr | Name | Type | Address | Offset | Size | Entry Size | Flags | Link | Info | Address Align |

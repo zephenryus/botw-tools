@@ -1,2 +1,0 @@
-
-The decoding of unwind sections for machine type PowerPC is not currently supported.
