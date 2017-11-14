@@ -20,20 +20,20 @@ Number values are read in **Little Endian** even though the PowerPC and most Wii
 ![AAMP Header Structure](images/aamp/aamp-header.png "AAMP Header Layout")
 
 | Offset | Size (bytes) | Type | Description |
-|--:|:-:|---|---|
-| `0x00` | 4 | String | AAMP file signature (magic) `41 41 4D 50` or "AAMP" |
+|-------:|:------------:|------|-------------|
+| `0x00` | 4 | String       | AAMP file signature (magic) `41 41 4D 50` or "AAMP" |
 | `0x04` | 4 | Unsigned Int | AAMP version. Should be version 2 |
-| `0x08` | 4 | Unknown | Unknown. Usually `03 00 00 00` (Unsigned Int `3`) |
+| `0x08` | 4 | Unknown      | Unknown. Usually `03 00 00 00` (Unsigned Int `3`) |
 | `0x0c` | 4 | Unsigned Int | File size in bytes |
-| `0x10` | 4 | Unknown | Unknown. Usually `00 00 00 00` (Unsigned Int `0`) |
+| `0x10` | 4 | Unknown      | Unknown. Usually `00 00 00 00` (Unsigned Int `0`) |
 | `0x14` | 4 | Unsigned Int | File extension name length |
 | `0x18` | 4 | Unsigned Int | Number of root nodes |
 | `0x1c` | 4 | Unsigned Int | Number of child nodes on the root node |
 | `0x20` | 4 | Unsigned Int | Number of nodes excluding root nodes and root child nodes (direct descendants) |
 | `0x24` | 4 | Unsigned Int | Data buffer size in bytes |
 | `0x28` | 4 | Unsigned Int | String buffer size in bytes |
-| `0x2c` | 4 | Unknown | Unknown. Usually `00 00 00 00` (Unsigned Int `0`) |
-| `0x30` | n | String | A null-terminated string of the resulting file type. Usually `xml\0` The length is equal to value found in `0x14-0x17` (usually 4 bytes). |
+| `0x2c` | 4 | Unknown      | Unknown. Usually `00 00 00 00` (Unsigned Int `0`) |
+| `0x30` | n | String       | A null-terminated string of the resulting file type. Usually `xml\0` The length is equal to value found in `0x14-0x17` (usually 4 bytes). |
 
 The root node follows immediately after the header
 
@@ -44,7 +44,7 @@ The root node follows immediately after the header
 **Remember** all integers are stored in _Little Endian_ in AAMP files.
 
 | Name | Hex Value | Type | Value |
-|---|--:|:-:|---|
+|------|----------:|:----:|-------|
 | Signature | `41 41 4D 50` | string | `AAMP` |
 | Version | `02 00 00 00` | unsigned int 32 | `2` |
 | Unknown 0x08 | `03 00 00 00` | unsigned int 32 | `3` |
@@ -57,7 +57,7 @@ The root node follows immediately after the header
 | Data Buffer Size | `20 00 00 00` | unsigned int 32 | `32` |
 | String Buffer Size | `40 01 00 00` | unsigned int 32 | `320` |
 | Unknown 0x2c | `00 00 00 00` | Unknown | |
-| File Extension | `78 6D 6C 00` | string | `xml`
+| File Extension | `78 6D 6C 00` | string | `xml` |
 
 ## Nodes
 
@@ -91,7 +91,7 @@ The root node follows immediately after the header
 | Offset | Size | Type | Description |
 |--:|:-:|---|---|
 | `0x00` | 4 | Unsigned Int | Node ID. |
-| `0x04` | 2 | Unsigned Int | Offset to first child node in bytes |
+| `0x04` | 2 | Unsigned Int | Offset to first child node or node value in bytes |
 | `0x06` | 1 | Unsigned Int | Child node count |
 | `0x07` | 1 | Unsigned Int | Node data type |
 
@@ -102,20 +102,20 @@ The offset is calculated by multiplying the number of bytes by 4 and adding it t
 Each node has a data type to determine how to correctly parse the node value. If a node's child count is greater than 0
 it is _always_ a node regardless of the data type indicated.
 
-| Data Type | Value | Node Size (bytes) | Description |
-|---|--:|:-:|---|
-| Node | `0x00` | 4 | The current node has child nodes |
-| Boolean | `0x00` | | `true` or `false` |
-| Float | `0x01` | 4 | [Half Precision Floating-point number](https://en.wikipedia.org/wiki/Half-precision_floating-point_format) |
-| Int | `0x02` | 4 | 16-bit Integer |
-| Vector2 | `0x03` | | Vector array with two floating-point numbers `x`, `y` |
-| Vector3 | `0x04` | | Vector array with three floating-point numbers `x`, `y`, `z` |
-| Vector4 | `0x06` | | Vector array with four floating-point numbers `x`, `y`, `z`, `w` |
-| String | `0x07` | | A sequence of characters |
-| Actor | `0x08` | | A hashed reference to an BotW Actor object |
-| UnknownString | `0x0f` | | |
-| UnknownUnsignedInt | `0x11` | | |
-| String2 | `0x14` | | |
+| Value | Data Type | Node Size (bytes) | Description |
+|:---:|---|:---:|---|
+| `0x00` | Node | 4 | The current node has child nodes |
+| `0x00` | Boolean | 4? | `0` or `1` |
+| `0x01` | Float | 4 | Floating-point number |
+| `0x02` | Int | 4 | Integer |
+| `0x03` | Vector2 | | Vector array with two floating-point numbers `x`, `y` |
+| `0x04` | Vector3 | | Vector array with three floating-point numbers `x`, `y`, `z` |
+| `0x06` | Vector4 | | Vector array with four floating-point numbers `x`, `y`, `z`, `w` |
+| `0x07` | String | n | Null-terminated string |
+| `0x08` | Actor | n | Null-terminated string linking to a BotW Actor object |
+| `0x0f` | UnknownString | n | Null-terminated string |
+| `0x11` | UnknownUnsignedInt | | |
+| `0x14` | String2 | n | Null-terminated string |
 
 ## AAMP Checksum
 
