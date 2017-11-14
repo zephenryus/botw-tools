@@ -1,6 +1,6 @@
 # ELF Header
 
-|  |  |
+| Key | Value |
 |---|--:|
 | Magic:  | `7f 45 4c 46 01 02 01 ca fe 00 00 00 00 00 00 00` | 
 | Class:                             | `ELF32` |
