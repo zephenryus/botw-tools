@@ -11,13 +11,20 @@ AAMP files are structured as follows.
 ![AAMP File Structure](images/aamp/aamp-spec.png "AAMP File Structure")
 
 1. AAMP Header
-  * File meta data
+
+   File meta data
+   
 2. Node Table
-  * Defines how XML DOM should be structured
+
+   Defines how XML DOM should be structured
+   
 3. Data Table
-  * Table of values referenced by the Node Table
+
+   Table of values referenced by the Node Table
+   
 4. String Table
-  * Table of null-terminated strings referenced by the Node Table
+
+   Table of null-terminated strings referenced by the Node Table
 
 ## AAMP Header
 
