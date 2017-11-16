@@ -6,12 +6,18 @@ Number values are read in **Little Endian** even though the PowerPC and most Wii
 
 ### AAMP File Layout
 
+AAMP files are structured as follows.
+
 ![AAMP File Structure](images/aamp/aamp-spec.png "AAMP File Structure")
 
 1. AAMP Header
-2. Node Buffer
-3. Data Buffer
-4. String Buffer
+  * File meta data
+2. Node Table
+  * Defines how XML DOM should be structured
+3. Data Table
+  * Table of values referenced by the Node Table
+4. String Table
+  * Table of null-terminated strings referenced by the Node Table
 
 ## AAMP Header
 
@@ -30,8 +36,8 @@ Number values are read in **Little Endian** even though the PowerPC and most Wii
 | `0x18` | 4 | Unsigned Int | Number of root nodes |
 | `0x1c` | 4 | Unsigned Int | Number of child nodes on the root node |
 | `0x20` | 4 | Unsigned Int | Number of nodes excluding root nodes and root child nodes (direct descendants) |
-| `0x24` | 4 | Unsigned Int | Data buffer size in bytes |
-| `0x28` | 4 | Unsigned Int | String buffer size in bytes |
+| `0x24` | 4 | Unsigned Int | Data tabletable size in bytes |
+| `0x28` | 4 | Unsigned Int | String table size in bytes |
 | `0x2c` | 4 | Unknown      | Unknown. Usually `00 00 00 00` (Unsigned Int `0`) |
 | `0x30` | n | String       | A null-terminated string of the resulting file type. Usually `xml\0` The length is equal to value found in `0x14-0x17` (usually 4 bytes). |
 
@@ -54,16 +60,16 @@ The root node follows immediately after the header
 | Root Nodes Count | `01 00 00 00` | unsigned int 32 | `1` |
 | Root Node Children Count | `10 00 00 00` | unsigned int 32 | `16` |
 | Remaining Nodes | `81 00 00 00` | unsigned int 32 | `129` |
-| Data Buffer Size | `20 00 00 00` | unsigned int 32 | `32` |
-| String Buffer Size | `40 01 00 00` | unsigned int 32 | `320` |
+| Data table Size | `20 00 00 00` | unsigned int 32 | `32` |
+| String table Size | `40 01 00 00` | unsigned int 32 | `320` |
 | Unknown 0x2c | `00 00 00 00` | Unknown | |
 | File Extension | `78 6D 6C 00` | string | `xml` |
 
 ## Nodes
 
-### Node Buffer Layout
+### Node table Layout
 
-![AAMP Node Buffer Structure](images/aamp/node-layout.png "AAMP Node Buffer Structure")
+![AAMP Node table Structure](images/aamp/node-layout.png "AAMP Node table Structure")
 
 ### Root Node
 
@@ -123,7 +129,7 @@ Method for calculating a checksum to verify correct parsing:
 
 1. Get file total size in bytes (`0x0c`)
 2. Get total number of nodes (`0x18`, `0x1c` & `0x20`)
-3. Get data and string buffer sizes (`0x24` & `0x28`)
+3. Get data and string table sizes (`0x24` & `0x28`)
 4. Total the bytes
     * 52 bytes for the AAMP header
     * 12 bytes per root node
@@ -137,14 +143,14 @@ For example, `Lynel_Junior.bdrop`:
 ```
 total file size:            1576  bytes
 total number of nodes:      146
-data buffer size:           32    bytes
-string buffer size:         320   bytes
+data table size:            32    bytes
+string table size:          320   bytes
 
 aamp header:                52    bytes
 1 root node * 12 bytes:     12    bytes
 145 nodes * 8 bytes:        1160  bytes
-data buffer:                32    bytes
-string buffer:            + 320   bytes
+data table:                 32    bytes
+string table:             + 320   bytes
                          ---------------
 total size:                 1576  bytes
 ```
