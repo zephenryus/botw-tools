@@ -1,3 +1,26 @@
+# Contents
+
+* [AAMP File Specification](#aamp-file-specification)
+  * [AAMP File Layout](#aamp-file-layout)
+  * [AAMP Header](#aamp-header)
+    * [Header Layout](#header-layout)
+    * [Header Structure](#header-structure)
+    * [Example](#example)
+  * [Nodes](#nodes)
+    * [Node Table Layout](#node-table-layout)
+    * [Root Node](#root-node)
+      * [Root Node Structure](#root-node-structure)
+    * [Node](#node)
+      * [Node Structure](#node-structure)
+    * [Node Data Types](#node-data-types)
+* [AAMP to XML Parsing Algorithm](#aamp-to-xml-parsing-algorithm)
+  * [Example](#example-1)
+    * [First Node](#first-node)
+    * [Second Node](#second-node)
+* [AAMP Checksum](#aamp-checksum)
+  * [Example](#example-2)
+* [Sources and Resources](#sources-and-resources)
+
 # AAMP File Specification
 
 AAMP files are compressed xml files.
@@ -83,7 +106,7 @@ struct AAMPHeader {
 
 There are two types of node structures found in AAMP files, the root node and child nodes. The root node follows immediately after the header (`0x34`). The root node is followed by section nodes. Each section node contains a list of value nodes (see [Node Data Types](#node-data-types)).
 
-### Node table Layout
+### Node Table Layout
 
 ![AAMP Node table Structure](images/aamp/node-layout.png "AAMP Node table Structure")
 
@@ -165,7 +188,7 @@ it is _always_ a node regardless of the data type indicated.
 | `0x11` | UnknownUnsignedInt | | |
 | `0x14` | String2 | n | Null-terminated string |
 
-## AAMP to XML Parsing Algorithm
+# AAMP to XML Parsing Algorithm
 
 An AAMP is parsed to XML by reading through each node and fetching the value from the data table and string table.
 
@@ -223,7 +246,7 @@ AAMPHeader
 </root>
 ```
 
-### Example
+## Example
 
 For example, `Chuchu_Normal.bdrop`:
 
@@ -275,7 +298,7 @@ RootNode {
 }
 ```
 
-The next node to read is located at `0x40`. The offset is calculated by multiplying the offset value at `0x0c` with 4 bytes and adding it to the address of the current node (`0x34`). Hence, `0x34 + 3 * 0x04 = 0x40`.
+The next node to read is located at `0x40`. The offset is calculated by multiplying the offset value at `0x0c` with 4 bytes and adding it to the address of the current node (`0x34`). Hence, `0x34 + 0x03 * 0x04 = 0x40`.
 
 In the XML document we would add the root node and add the number of children nodes. I chose to give it a type of "complex" because that is the type found in the `cos.xml` and `app.xml` of the root node.
 
@@ -319,7 +342,7 @@ Node {
 }
 ```
 
-Because this node has a data type of Node, the first child node is located at `0x88`. The offset is calculated by multiplying the offset value at `0x44` with 4 bytes and adding it to the address of the current node (`0x40`). Hence, `0x40 + 18 * 0x04 = 0x88`.
+Because this node has a data type of Node, the first child node is located at `0x88`. The offset is calculated by multiplying the offset value at `0x44` with 4 bytes and adding it to the address of the current node (`0x40`). Hence, `0x40 + 0x12 * 0x04 = 0x88`.
 
 Parsing to XML would yield
 
@@ -375,7 +398,13 @@ Offset(h) | 00 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F |
 
 Parse each node as a Node
 
-#### First Node
+### First Node
+
+```
+Offset(h) | 00 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F |
+----------+-------------------------------------------------+------------------
+ 00000080 |                         B4 66 C6 97 82 00 00 02 |         ´fÆ—‚...
+```
 
 ```c#
 Node {
@@ -414,7 +443,13 @@ Parsing to XML would yield
 </root>
 ```
 
-#### Second Node
+### Second Node
+
+```
+Offset(h) | 00 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F |
+----------+-------------------------------------------------+------------------
+ 00000090 | B1 9D D8 DB 85 00 00 08                         | ±.ØÛ…...        
+```
 
 ```c#
 Node {
@@ -453,7 +488,7 @@ Parsing to XML would yield
 </root>
 ```
 
-## AAMP Checksum
+# AAMP Checksum
 
 Method for calculating a checksum to verify correct parsing:
 
@@ -466,7 +501,7 @@ Method for calculating a checksum to verify correct parsing:
     * 8 bytes per child node
         * Size depends on data type
   
-### Example
+## Example
 
 For example, `Lynel_Junior.bdrop`:
 
@@ -485,7 +520,7 @@ string table:             + 320   bytes
 total size:                 1576  bytes
 ```
 
-## Sources and Resources
+# Sources and Resources
 - [Custom Mario Kart Wiki](http://mk8.tockdom.com/wiki/AAMP_(File_Format))
 - [jam1garner aamp2xml](https://github.com/jam1garner/aamp2xml/blob/master/AAMP_docs.txt)
 - [MrCheeze aamp.py](https://github.com/MrCheeze/botw-tools/blob/master/aamp.py)
