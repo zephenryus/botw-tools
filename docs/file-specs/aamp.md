@@ -287,18 +287,18 @@ Offset(h) | 00 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F |
  00000030 |             6C CB F6 A4 03 00 00 00 03 00 09 00 |     lËö¤........
 ```
 
-Parsing to XML would yield
+Parsing would yield
 
 ```c#
 RootNode {
     id =            0x6CCBF6A4;
     unknown0x04 =   3;
-    offset =        0x40;     // 0x34 + 3 * 0x04
+    offset =        0x40;     // 0x34 + 0x03 * 0x04
     childCount =    9;
 }
 ```
 
-The next node to read is located at `0x40`. The offset is calculated by multiplying the offset value at `0x0c` with 4 bytes and adding it to the address of the current node (`0x34`). Hence, `0x34 + 0x03 * 0x04 = 0x40`.
+The next node to read is located at `0x40`. The offset is calculated by multiplying the offset value stored at `0x0c` (`03 00`) with 4 bytes and adding it to the address of the current node (`0x34`). Hence, `0x34 + 0x03 * 0x04 = 0x40`.
 
 In the XML document we would add the root node and add the number of children nodes. I chose to give it a type of "complex" because that is the type found in the `cos.xml` and `app.xml` of the root node.
 
@@ -336,13 +336,13 @@ For each node
 ```c#
 Node {
     id =            0xF7ADDE69;
-    offset =        0x88;           // 0x40 + 18 * 0x04
+    offset =        0x88;           // 0x40 + 0x12 * 0x04
     childCount =    9;
     dataType =      0;              // Node
 }
 ```
 
-Because this node has a data type of Node, the first child node is located at `0x88`. The offset is calculated by multiplying the offset value at `0x44` with 4 bytes and adding it to the address of the current node (`0x40`). Hence, `0x40 + 0x12 * 0x04 = 0x88`.
+Because this node has a data type of Node, the first child node is located at `0x88`. The offset is calculated by multiplying the offset value stored at `0x44` (`12 00`) with 4 bytes and adding it to the address of the current node (`0x40`). Hence, `0x40 + 0x12 * 0x04 = 0x88`.
 
 Parsing to XML would yield
 

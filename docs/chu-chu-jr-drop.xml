@@ -63,91 +63,89 @@ Item_Enemy_17 // White Chuchu Jelly
 Item_Enemy_16 // Yellow Chuchu Jelly
 </strings>
 
-<root-node id="6ccbf6a4">
+<?xml version="1.0" encoding="utf-8"?>
+<root-node id="6ccbf6a4" type="complex">
 <node id="f7adde69" address="0x0040" first-child-offset="0x0012" first-child="0x0088" child-count="9">
-    <node id="b466c697" address="0x0088" type="Int">
-        <!-- b4 66  c6 97  82 00  00 02 -->
-        82 00
-    </node>
-    <node id="b19dd8bd" address="0x0090" type="Actor">85 00</node>
-    <node id="0bccd142" address="0x0098" type="Actor">85 00</node>
-    <node id="9dfcd635" address="0x00a0" type="Actor">85 00</node>
-    <node id="3e69b2ab" address="0x00a8" type="Actor">85 00</node>
-    <node id="a859b5dc" address="0x00b0" type="Actor">86 00</node>
-    <node id="1208bc45" address="0x00b8" type="Actor">86 00</node>
-    <node id="8438bb32" address="0x00c0" type="Actor">86 00</node>
-    <node id="152504a2" address="0x00c8" type="Actor">87 00</node>
+    <node id="b466c697" address="0x0088" type="unsignedInt" length="4">8</node>
+    <node id="b19dd8bd" address="0x0090" type="actor" length="4">Normal</node>
+    <node id="0bccd142" address="0x0098" type="actor" length="4">Normal2</node>
+    <node id="9dfcd635" address="0x00a0" type="actor" length="4">Burnout</node>
+    <node id="3e69b2ab" address="0x00a8" type="actor" length="4">Burnout2</node>
+    <node id="a859b5dc" address="0x00b0" type="actor" length="4">Iced</node>
+    <node id="1208bc45" address="0x00b8" type="actor" length="4">Iced2</node>
+    <node id="8438bb32" address="0x00c0" type="actor" length="4">Electronic</node>
+    <node id="152504a2" address="0x00c8" type="actor" length="4">Electronic2</node>
 </node>
 <node id="d26d2926" address="0x0048" first-child-offset="0x0022" first-child="0x00d0" child-count="7">
-    <node id="b78496c5" address="0x00d0" type="Int">113</node>
-    <node id="eebb9bf9" address="0x00d8" type="Int">111</node>
-    <node id="fd92ad08" address="0x00e0" type="Int">110</node>
-    <node id="b3d62cd2" address="0x00e8" type="Int">108</node>
-    <node id="c82030be" address="0x00f0" type="Int">105</node>
-    <node id="0270c8c6" address="0x00f8" type="Actor">7e 00</node>
-    <node id="6ec61a7e" address="0x0100" type="Float">67 00</node>
+    <node id="b78496c5" address="0x00d0" type="unsignedInt" length="4">1</node>
+    <node id="eebb9bf9" address="0x00d8" type="unsignedInt" length="4">1</node>
+    <node id="fd92ad08" address="0x00e0" type="unsignedInt" length="4">0</node>
+    <node id="b3d62cd2" address="0x00e8" type="unsignedInt" length="4">0</node>
+    <node id="c82030be" address="0x00f0" type="unsignedInt" length="4">1</node>
+    <node id="0270c8c6" address="0x00f8" type="actor" length="4">Item_Enemy_40</node>
+    <node id="6ec61a7e" address="0x0100" type="float" length="4">100.0f</node>
 </node>
 <node id="98242e72" address="0x0050" first-child-offset="0x002e" first-child="0x0108" child-count="7">
-    <node id="b78496c5" address="0x0108" type="Int">99</node>
-    <node id="eebb9bf9" address="0x0110" type="Int">97</node>
-    <node id="fd92ad08" address="0x0118" type="Int">96</node>
-    <node id="b3d62cd2" address="0x0120" type="Int">94</node>
-    <node id="c82030be" address="0x0128" type="Int">91</node>
-    <node id="0270c8c6" address="0x0130" type="Actor">70 00</node>
-    <node id="6ec61a7e" address="0x0138" type="Float">5a 00</node>
+    <node id="b78496c5" address="0x0108" type="unsignedInt" length="4">1</node>
+    <node id="eebb9bf9" address="0x0110" type="unsignedInt" length="4">1</node>
+    <node id="fd92ad08" address="0x0118" type="unsignedInt" length="4">0</node>
+    <node id="b3d62cd2" address="0x0120" type="unsignedInt" length="4">0</node>
+    <node id="c82030be" address="0x0128" type="unsignedInt" length="4">1</node>
+    <node id="0270c8c6" address="0x0130" type="actor" length="4">Item_Enemy_40</node>
+    <node id="6ec61a7e" address="0x0138" type="float" length="4">30.0f</node>
 </node>
 <node id="48a0570b" address="0x0058" first-child-offset="0x003a" first-child="0x0140" child-count="7">
-    <node id="b78496c5" address="0x0140" type="Int">55 00</node>
-    <node id="eebb9bf9" address="0x0148" type="Int">53 00</node>
-    <node id="fd92ad08" address="0x0150" type="Int">52 00</node>
-    <node id="b3d62cd2" address="0x0158" type="Int">50 00</node>
-    <node id="c82030be" address="0x0160" type="Int">4d 00</node>
-    <node id="0270c8c6" address="0x0168" type="Actor">66 00</node>
-    <node id="6ec61a7e" address="0x0170" type="Float">4b 00</node>
+    <node id="b78496c5" address="0x0140" type="unsignedInt" length="4">1</node>
+    <node id="eebb9bf9" address="0x0148" type="unsignedInt" length="4">1</node>
+    <node id="fd92ad08" address="0x0150" type="unsignedInt" length="4">0</node>
+    <node id="b3d62cd2" address="0x0158" type="unsignedInt" length="4">0</node>
+    <node id="c82030be" address="0x0160" type="unsignedInt" length="4">1</node>
+    <node id="0270c8c6" address="0x0168" type="actor" length="4">Item_Enemy_15</node>
+    <node id="6ec61a7e" address="0x0170" type="float" length="4">100.0f</node>
 </node>
 <node id="0f20d962" address="0x0060" first-child-offset="0x0046" first-child="0x0178" child-count="7">
-    <node id="b78496c5" address="0x0178" type="Int">47 00</node>
-    <node id="eebb9bf9" address="0x0180" type="Int">45 00</node>
-    <node id="fd92ad08" address="0x0188" type="Int">44 00</node>
-    <node id="b3d62cd2" address="0x0190" type="Int">42 00</node>
-    <node id="c82030be" address="0x0198" type="Int">3f 00</node>
-    <node id="0270c8c6" address="0x01a0" type="Actor">58 00</node>
-    <node id="6ec61a7e" address="0x01a8" type="Float">3e 00</node>
+    <node id="b78496c5" address="0x0178" type="unsignedInt" length="4">1</node>
+    <node id="eebb9bf9" address="0x0180" type="unsignedInt" length="4">1</node>
+    <node id="fd92ad08" address="0x0188" type="unsignedInt" length="4">0</node>
+    <node id="b3d62cd2" address="0x0190" type="unsignedInt" length="4">0</node>
+    <node id="c82030be" address="0x0198" type="unsignedInt" length="4">1</node>
+    <node id="0270c8c6" address="0x01a0" type="actor" length="4">Item_Enemy_15</node>
+    <node id="6ec61a7e" address="0x01a8" type="float" length="4">30.0f</node>
 </node>
 <node id="71879cdf" address="0x0068" first-child-offset="0x0052" first-child="0x01b0" child-count="7">
-    <node id="b78496c5" address="0x01b0" type="Int">39 00</node>
-    <node id="eebb9bf9" address="0x01b8" type="Int">37 00</node>
-    <node id="fd92ad08" address="0x01c0" type="Int">36 00</node>
-    <node id="b3d62cd2" address="0x01c8" type="Int">34 00</node>
-    <node id="c82030be" address="0x01d0" type="Int">31 00</node>
-    <node id="0270c8c6" address="0x01d8" type="Actor">4e 00</node>
-    <node id="6ec61a7e" address="0x01e0" type="Float">2f 00</node>
+    <node id="b78496c5" address="0x01b0" type="unsignedInt" length="4">1</node>
+    <node id="eebb9bf9" address="0x01b8" type="unsignedInt" length="4">1</node>
+    <node id="fd92ad08" address="0x01c0" type="unsignedInt" length="4">0</node>
+    <node id="b3d62cd2" address="0x01c8" type="unsignedInt" length="4">0</node>
+    <node id="c82030be" address="0x01d0" type="unsignedInt" length="4">1</node>
+    <node id="0270c8c6" address="0x01d8" type="actor" length="4">Item_Enemy_17</node>
+    <node id="6ec61a7e" address="0x01e0" type="float" length="4">100.0f</node>
 </node>
 <node id="2063083d" address="0x0070" first-child-offset="0x005e" first-child="0x01e8" child-count="7">
-    <node id="b78496c5" address="0x01e8" type="Int">2b 00</node>
-    <node id="eebb9bf9" address="0x01f0" type="Int">29 00</node>
-    <node id="fd92ad08" address="0x01f8" type="Int">28 00</node>
-    <node id="b3d62cd2" address="0x0200" type="Int">26 00</node>
-    <node id="c82030be" address="0x0208" type="Int">23 00</node>
-    <node id="0270c8c6" address="0x0210" type="Actor">40 00</node>
-    <node id="6ec61a7e" address="0x0218" type="Float">22 00</node>
+    <node id="b78496c5" address="0x01e8" type="unsignedInt" length="4">1</node>
+    <node id="eebb9bf9" address="0x01f0" type="unsignedInt" length="4">1</node>
+    <node id="fd92ad08" address="0x01f8" type="unsignedInt" length="4">0</node>
+    <node id="b3d62cd2" address="0x0200" type="unsignedInt" length="4">0</node>
+    <node id="c82030be" address="0x0208" type="unsignedInt" length="4">1</node>
+    <node id="0270c8c6" address="0x0210" type="actor" length="4">Item_Enemy_17</node>
+    <node id="6ec61a7e" address="0x0218" type="float" length="4">30.0f</node>
 </node>
 <node id="8e333251" address="0x0078" first-child-offset="0x006a" first-child="0x0220" child-count="7">
-    <node id="b78496c5" address="0x0220" type="Int">1d 00</node>
-    <node id="eebb9bf9" address="0x0228" type="Int">1b 00</node>
-    <node id="fd92ad08" address="0x0230" type="Int">1a 00</node>
-    <node id="b3d62cd2" address="0x0238" type="Int">18 00</node>
-    <node id="c82030be" address="0x0240" type="Int">15 00</node>
-    <node id="0270c8c6" address="0x0248" type="Actor">36 00</node>
-    <node id="6ec61a7e" address="0x0250" type="Float">13 00</node>
+    <node id="b78496c5" address="0x0220" type="unsignedInt" length="4">1</node>
+    <node id="eebb9bf9" address="0x0228" type="unsignedInt" length="4">1</node>
+    <node id="fd92ad08" address="0x0230" type="unsignedInt" length="4">0</node>
+    <node id="b3d62cd2" address="0x0238" type="unsignedInt" length="4">0</node>
+    <node id="c82030be" address="0x0240" type="unsignedInt" length="4">1</node>
+    <node id="0270c8c6" address="0x0248" type="actor" length="4">Item_Enemy_16</node>
+    <node id="6ec61a7e" address="0x0250" type="float" length="4">100.0f</node>
 </node>
 <node id="19228410" address="0x0080" first-child-offset="0x0076" first-child="0x0258" child-count="7">
-    <node id="b78496c5" address="0x0258" type="Int">0f 00</node>
-    <node id="eebb9bf9" address="0x0260" type="Int">0d 00</node>
-    <node id="fd92ad08" address="0x0268" type="Int">0c 00</node>
-    <node id="b3d62cd2" address="0x0270" type="Int">0a 00</node>
-    <node id="c82030be" address="0x0278" type="Int">07 00</node>
-    <node id="0270c8c6" address="0x0280" type="Actor">28 00</node>
-    <node id="6ec61a7e" address="0x0288" type="Float">06 00</node>
+    <node id="b78496c5" address="0x0258" type="unsignedInt" length="4">1</node>
+    <node id="eebb9bf9" address="0x0260" type="unsignedInt" length="4">1</node>
+    <node id="fd92ad08" address="0x0268" type="unsignedInt" length="4">0</node>
+    <node id="b3d62cd2" address="0x0270" type="unsignedInt" length="4">0</node>
+    <node id="c82030be" address="0x0278" type="unsignedInt" length="4">1</node>
+    <node id="0270c8c6" address="0x0280" type="actor" length="4">Item_Enemy_16</node>
+    <node id="6ec61a7e" address="0x0288" type="float" length="4">30.0f</node>
 </node>
 </root-node>
