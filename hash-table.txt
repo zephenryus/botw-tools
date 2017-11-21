@@ -1,3 +1,6 @@
+U-King.elf: 0x021f8920
+			0x021fdbb0
+
 0x5ba2e20e: aabbMax
 0x67afdd57: aabbMin
 0xd75035f1: ABDIJK
