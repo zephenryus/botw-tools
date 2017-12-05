@@ -1,9 +1,11 @@
 import argparse
 import sys
 import os
+
 from PIL import Image
 
-import src.extractors.gradientmaps as gradient_maps
+# import src.extractors.gradientmaps as gradient_maps
+import gradientmaps as gradient_maps
 
 
 class HGHT:
@@ -20,7 +22,9 @@ class HGHT:
             "height_max": 0xffff,
             "extension": ".hght",
             "color_table": gradient_maps.Terrain,
-            "color_mode": COLOR_MODE_GRADIENT
+            # "color_table": gradient_maps.GrayScale,
+            "color_mode": COLOR_MODE_VALUE
+            # "color_mode": COLOR_MODE_GRADIENT
         },
         "water": {
             "data_length": 2,
@@ -114,10 +118,16 @@ class HGHT:
         print("Rendering " + os.path.basename(filename) + extension + " map...")
         map_image = self.render_height_map_image(height_map, size, gradient, color_mode, height_max)
 
-        print("Saving maps/" + os.path.basename(filename) + extension + ".png...")
         directory = os.path.dirname(filename + extension) + "\\maps\\"
         if not os.path.exists(directory):
             os.makedirs(directory)
+
+        # if color_mode is self.COLOR_MODE_VALUE:
+        #     print("Saving maps/" + os.path.basename(filename) + extension + ".jpg...")
+        #     map_image.save(directory + os.path.basename(filename) + extension + ".jpg", "jpeg", quality=100,
+        #                    optimize=False)
+        # else:
+        print("Saving maps/" + os.path.basename(filename) + extension + ".png...")
         map_image.save(directory + os.path.basename(filename) + extension + ".png")
 
     @staticmethod
@@ -136,16 +146,19 @@ class HGHT:
         return height_map
 
     def render_height_map_image(self, height_map, size=0x100, color_table=None, color_mode=None, height_max=0xffff):
-        height_map_image = Image.new("RGBA", (size, size))
+        if color_mode is None:
+            color_mode = self.COLOR_MODE_VALUE
+
+        if color_mode is self.COLOR_MODE_VALUE:
+            height_map_image = Image.new("RGBA", (size, size))
+        else:
+            height_map_image = Image.new("RGB", (size, size))
 
         if color_table is None:
             color_table = [
                 [0.00, 0x00, 0x00, 0x00],
                 [1.00, 0xff, 0xff, 0xff]
             ]
-
-        if color_mode is None:
-            color_mode = self.COLOR_MODE_VALUE
 
         for y in range(0, size):
             for x in range(0, size):
@@ -233,7 +246,8 @@ class HGHT:
         r = value >> 0 & 0xff
         g = value >> 8 & 0xff
         b = value >> 16 & 0xff
-        a = 0xff - (value >> 24 & 0xff)
+        a = value >> 24 & 0xff
+        a = 0xff
 
         return r, g, b, a
         # return r, g, b

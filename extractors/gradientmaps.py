@@ -14,3 +14,8 @@ WaterDepth = [
     {"stop": 0.00, "color": {'r': 0x15, 'g': 0x54, 'b': 0xd1}},
     {"stop": 1.00, "color": {'r': 0x34, 'g': 0x40, 'b': 0x44}}
 ]
+
+GrayScale = [
+    {"stop": 0.00, "color": {'r': 0x00, 'g': 0x00, 'b': 0x00}},
+    {"stop": 1.00, "color": {'r': 0xff, 'g': 0xff, 'b': 0xff}}
+]
