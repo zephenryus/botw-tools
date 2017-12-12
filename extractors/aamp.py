@@ -1,12 +1,14 @@
-# python
-import re
+import argparse
+import codecs
+import json
 import struct
-import sys
 import xml.etree.ElementTree as ElementTree
+import os
 
-from enum import Enum
+import zlib
 
-import binascii
+import dicttoxml
+import yaml
 
 
 class NodeType:
@@ -16,529 +18,242 @@ class NodeType:
     Int = 0x02
     Vector2 = 0x03
     Vector3 = 0x04
-    Unknown0x05 = 0x05
     Vector4 = 0x06
     String = 0x07
     Actor = 0x08
     UnknownString = 0x0f
     UnknownUnsignedInt = 0x11
     String2 = 0x14
-    Names = {
-        0x00: "Boolean",
-        0x01: "Float",
-        0x02: "Int",
-        0x03: "Vector2",
-        0x04: "Vector3",
-        0x05: "Unknown0x05",
-        0x06: "Vector4",
-        0x07: "String",
-        0x08: "Actor",
-        0x0f: "UnknownString",
-        0x11: "UnknownUnsignedInt",
-        0x14: "String2",
-    }
-
-    @staticmethod
-    def getBoolean(data, pos, bom="<"):
-        return struct.unpack(bom + "?", data[pos:pos + 0x01])[0]
-
-    @staticmethod
-    def getFloat(data, pos, bom="<"):
-        return struct.unpack(bom + "f", data[pos:pos + 0x04])[0]
-
-    @staticmethod
-    def getInt(data, pos, bom="<"):
-        return struct.unpack(bom + "I", data[pos:pos + 0x04])[0]
-
-    @staticmethod
-    def getActor(data, pos):
-        return data[pos:pos + 0x04]
-
-    @staticmethod
-    def getString(data, pos):
-        return data[pos:pos + 0x04]
-
-
-def uint8(data, pos, bom):
-    return struct.unpack(bom + "B", data[pos:pos + 1])[0]
-
-
-def uint16(data, pos, bom):
-    return struct.unpack(bom + "H", data[pos:pos + 2])[0]
-
-
-def uint32(data, pos, bom):
-    return struct.unpack(bom + "I", data[pos:pos + 4])[0]
-
-
-def getString(data):
-    string = b""
-    char = data[:1]
-    i = 1
-
-    while char != b"\x00":
-        string += char
-        if i == len(data): break
-
-        char = data[i:i + 1]
-        i += 1
-
-    return (string.decode("utf-8"))
-
-
-ADLER_MOD = 65521
-
-
-def adler32(data):
-    a = 1
-    b = 0
-
-    for index in range(0, len(data)):
-        a = (a + data[index]) % ADLER_MOD
-        b = (b + a) % ADLER_MOD
-
-    return (b << 16) | a
-
-
-def getNode(data, nodeAddress, index):
-    id = uint32(data, nodeAddress + 0x00, "<")
-    offset = nodeAddress + uint16(data, nodeAddress + 0x04, "<") * 4
-    childCount = uint8(data, nodeAddress + 0x06, "<")
-    type = uint8(data, nodeAddress + 0x07, "<")
-
-    if childCount > 0 and type is NodeType.Node:
-        print("id: ", id,
-              "\naddress: ", hex(nodeAddress),
-              "\nchild count: ", childCount,
-              "\nchild node offset: ", hex(offset),
-              "\nnode type:  Node",
-              "\nnode depth: ", index,
-              "\n\n")
-
-        for nodeIndex in range(0, childCount):
-            getNode(data, offset + nodeIndex * 8, index + 1)
-
-    elif childCount is 0:
-        print("id: ", id,
-              "\naddress: ", hex(nodeAddress),
-              "\nnode type: ", NodeType.Names[type],
-              "\nnode depth: ", index)
-
-        if type is NodeType.Boolean:
-            print("Boolean: ", NodeType.getBoolean(data, nodeAddress + 0x04))
-            pass
-        elif type is NodeType.Float:
-            print("Float: ", NodeType.getFloat(data, nodeAddress + 0x04))
-            pass
-        elif type is NodeType.Int:
-            print("Int: ", NodeType.getInt(data, nodeAddress + 0x04))
-            pass
-        elif type is NodeType.Vector2:
-            print("Vector2")
-            pass
-        elif type is NodeType.Vector3:
-            print("Vector 3")
-            pass
-        elif type is NodeType.Unknown0x05:
-            print("Unknown0x05")
-            pass
-        elif type is NodeType.Vector4:
-            print("Vector4")
-            pass
-        elif type is NodeType.String:
-            print("String")
-            pass
-        elif type is NodeType.Actor:
-            print("Actor: ", NodeType.getActor(data, nodeAddress + 0x04))
-            pass
-        elif type is NodeType.UnknownString:
-            print("UnknownString")
-            pass
-        elif type is NodeType.UnknownUnsignedInt:
-            print("UnknownUnsignedInt")
-            pass
-        elif type is NodeType.String2:
-            print("String2")
-            pass
-        else:
-            print("Unknown Node Type")
-
-        print("\n\n")
-
-
-class DataTypeParser:
-    @staticmethod
-    def uInt8(content, offset):
-        return struct.unpack("<B", content[offset:offset + 0x01])[0]
-
-    @staticmethod
-    def uInt16(content, offset):
-        return struct.unpack("<H", content[offset:offset + 0x02])[0]
-
-    @staticmethod
-    def uInt32(content, offset):
-        return struct.unpack("<I", content[offset:offset + 0x04])[0]
-
-    @staticmethod
-    def string(content, offset, length=1):
-        string = b""
 
-        for index in range(offset, offset + length):
-            char = content[index:index + 1]
-
-            if char == b"\x00":
-                break
+    Values = [
+        0x00,
+        0x01,
+        0x02,
+        0x07,
+        0x08,
+        0x0f,
+        0x11,
+        0x14
+    ]
 
-            string += char
+    Reference = [
+    ]
 
-        return string.decode("utf-8")
 
-    @staticmethod
-    def byteHex(byteString):
-        return "0x" + "".join("{:02x}".format(c) for c in byteString)
+class AAMP:
+    data_object = {}
+    hash_table = {}
 
+    def __init__(self, path):
+        print("Parsing AAMP file...")
 
-class AAMP():
-    nodeTree = {}
+        filename = os.path.basename(path)
+        print("Reading {0}...".format(filename))
 
-    def __init__(self, fileContents):
-        print("Extracting AAMP...")
+        file = open(path, 'rb')
+        self.data = file.read()
 
-        self.contents = fileContents
+        signature = self.data[0x00:0x04]
 
-        assert self.isAAMP(), \
-            "Unknown File Format: Expected b'AAMP' but saw %r" % self.contents[0x00:0x04]
+        if signature != b'AAMP':
+            print('\033[31mQuitting: {0} is not a AAMP file\033[0m'.format(filename))
+            print('\033[31mExpected b\'AAMP\' but saw {0}\033[0m'.format(signature))
+            exit(0)
 
-        self.version = self.getVersion()
-        assert self.version is 2, \
-            "AAMP version %r is not supported, must be version 2" % self.version
+        version = struct.unpack('<I', self.data[0x04:0x08])[0]
+        if version != 2:
+            print('\033[31mQuitting: {0} is not the correct AAMP version\033[0m'.format(filename))
+            print('\033[31mExpected 2 but saw {0}\033[0m'.format(version))
+            exit(0)
 
-        self.fileSize = self.getFileSize()
+        # Get hashed names
+        self.get_hash_table()
 
-        self.dataBufferSize = self.getDataBufferSize()
-        self.stringBufferSize = self.getStringBufferSize()
-        self.dataBuffer = self.parseDataBuffer()
-        self.stringBuffer = self.parseStringBuffer()
+        root_nodes_length = struct.unpack('<I', self.data[0x18:0x1c])[0]
+        pos = 0x34
 
-        self.rootNodesCount = self.getRootNodesCount()
-        self.rootNodesChildCount = self.getRootNodesChildCount()
-        self.totalNodes = self.getTotalNodes()
+        for index in range(0, root_nodes_length):
+            children = {}
 
-        self.fileExtensionLength = self.getFileExtensionLength()
-        self.fileExtension = self.getFileExtension()
+            node_id, unknown, offset, child_count = \
+                struct.unpack('<IIHH', self.data[pos:pos + 0x0c])
 
-        print("File size: ", self.fileSize,
-              "Root Nodes Count: ", self.rootNodesCount,
-              "Total Nodes: ", self.totalNodes,
-              "\nData Buffer Size: ", self.dataBufferSize,
-              "\nString Buffer Size: ", self.stringBufferSize)
+            if node_id in self.hash_table:
+                node_id = self.hash_table[node_id]
 
-        print(self.dataBuffer,
-              "\n",
-              self.stringBuffer)
+            node_id = str(node_id)
 
-        self.ptr = 0x30 + self.fileExtensionLength
+            self.data_object[node_id] = {}
 
-        self.parseNodes()
+            child_pos = offset * 4 + pos
+            for child_index in range(0, child_count):
+                child_node_id = struct.unpack('<I', self.data[child_pos:child_pos + 0x04])[0]
+                if child_node_id in self.hash_table:
+                    child_node_id = self.hash_table[child_node_id]
 
-    def isAAMP(self):
-        return self.contents[0x00:0x04] == b'AAMP'
+                child_node_id = str(child_node_id)
 
-    def getVersion(self):
-        return DataTypeParser.uInt32(self.contents, 0x04)
+                children[child_node_id] = self.get_node(child_pos)
+                child_pos += 0x08
 
-    def getFileSize(self):
-        return DataTypeParser.uInt32(self.contents, 0x0c)
+            self.data_object[node_id] = children
+            pos += 0x0c
 
-    def getFileExtensionLength(self):
-        return DataTypeParser.uInt32(self.contents, 0x14)
+    def get_hash_table(self):
+        file = open('C:\\botw-data\\src\\extractors\\hashed_names.txt', 'r')
+        data = file.read()
+        data = data.split('\n')
 
-    def getRootNodesCount(self):
-        return DataTypeParser.uInt32(self.contents, 0x18)
+        for index in range(0, len(data)):
+            self.hash_table[zlib.crc32(bytearray(data[index], 'utf-8'))] = data[index]
 
-    def getRootNodesChildCount(self):
-        return DataTypeParser.uInt32(self.contents, 0x1c)
+        file = open('C:\\botw-data\\src\\extractors\\hash-number-appendix.txt', 'r')
+        data = file.read()
+        data = data.split('\n')
 
-    def getTotalNodes(self):
-        return DataTypeParser.uInt32(self.contents, 0x20) + self.rootNodesCount + self.rootNodesChildCount
+        for index in range(0, len(data)):
+            self.hash_table[zlib.crc32(bytearray(data[index], 'utf-8'))] = data[index]
 
-    def getDataBufferSize(self):
-        return DataTypeParser.uInt32(self.contents, 0x24)
+        file.close()
 
-    def getStringBufferSize(self):
-        return DataTypeParser.uInt32(self.contents, 0x28)
+    def get_node(self, pos):
+        node = {}
 
-    def getFileExtension(self):
-        return DataTypeParser.string(self.contents, 0x30, self.fileExtensionLength)
+        node_id, offset, child_count, child_node_type \
+            = struct.unpack('<IHBB', self.data[pos:pos + 0x08])
 
-    def parseNodes(self):
-        self.parseRootNodes()
-        # self.parseChildNodes()
+        if node_id in self.hash_table:
+            node_id = self.hash_table[node_id]
 
-    def parseRootNodes(self):
-        assert self.rootNodesCount > 0, \
-            "There are not root nodes in this file"
-
-        for rootNodeIndex in range(0, self.rootNodesCount):
-            rootNode = RootNode(self.contents, self.ptr + rootNodeIndex * 0x0c)
-
-    def getDataBuffer(self):
-        bufferStart = self.fileSize - self.stringBufferSize - self.dataBufferSize
-        bufferEnd = self.fileSize - self.stringBufferSize
-
-        return self.contents[bufferStart:bufferEnd]
-
-    def parseDataBuffer(self):
-        dataBuffer = self.getDataBuffer()
-        bufferSegmentSize = 0x02
-
-        for ptr in range(0, int(self.dataBufferSize / bufferSegmentSize)):
-            print(DataTypeParser.uInt16(dataBuffer, ptr * bufferSegmentSize))
-
-        return dataBuffer
-
-    def getStringBuffer(self):
-        bufferStart = self.fileSize - self.stringBufferSize
-
-        return self.contents[bufferStart:]
-
-    def parseStringBuffer(self):
-        stringBuffer = self.getStringBuffer()
-        strings = []
-        searchToggle = True
-
-        for index in range(0, len(stringBuffer)):
-            if stringBuffer[index] == 0x00:
-                searchToggle = False
-                continue
-
-            if searchToggle is True and stringBuffer[index] != 0x00:
-                continue
-
-            string = getString(stringBuffer[index:len(stringBuffer)])
-            strings.append(string)
-            print(string)
-            searchToggle = True
-
-        return strings
-
-
-class Node:
-    fileContents = b""
-    contents = b""
-    id = b""
-    dataOffset = 0x00
-    childNodeCount = 0x00
-    value = None
-
-    nodeTree = {}
-
-    def parseChildNodes(self, fileContents, dataOffset, childNodeCount):
-        if childNodeCount > 0:
-            for childNodeIndex in range(0, childNodeCount):
-                childNode = ChildNode(fileContents, dataOffset + childNodeIndex * 0x08)
-
-
-class RootNode(Node):
-    def __init__(self, fileContents, offset):
-        self.fileContents = fileContents
-        self.contents = fileContents[offset:offset + 0x0c]
-
-        self.id = self.contents[0x00:0x04]
-        self.unknown = self.contents[0x04:0x08]
-        self.nextNodeAddress = offset + DataTypeParser.uInt16(self.contents, 0x08) * 4
-        self.childNodeCount = DataTypeParser.uInt16(self.contents, 0x0a)
-
-        print(
-            "\nAddress: ", hex(offset),
-            "\nID: ", DataTypeParser.byteHex(self.id),
-            "\nUnknown: ", DataTypeParser.byteHex(self.unknown),
-            "\nNext Node Address: ", hex(self.nextNodeAddress),
-            "\nChild Node Count: ", self.childNodeCount,
-            "\n"
-        )
-
-        self.parseChildNodes(self.fileContents, self.nextNodeAddress, self.childNodeCount)
-
-
-class ChildNode(Node):
-    def __init__(self, fileContents, offset):
-        self.fileContents = fileContents
-        self.contents = fileContents[offset:offset + 0x08]
-
-        self.id = self.contents[0x00:0x04]
-        self.type = DataTypeParser.uInt8(self.contents, 0x07)
-        self.childNodeCount = DataTypeParser.uInt8(self.contents, 0x06)
-        self.nextNodeAddress = offset + DataTypeParser.uInt16(self.contents, 0x04) * 4
-
-        if self.childNodeCount > 0 and self.type is NodeType.Node:
-            print(
-                "Address: ", hex(offset),
-                "\nID: ", DataTypeParser.byteHex(self.id),
-                "\nType:  Node",
-                "\nnextNodeAddress: ", hex(self.nextNodeAddress),
-                "\nchildNodeCount: ", self.childNodeCount,
-                "\n"
-            )
-
-            self.parseChildNodes(self.fileContents, self.nextNodeAddress, self.childNodeCount)
+        node_id = str(node_id)
+
+        offset = offset * 4 + pos
+
+        # print("Node id: {0}, Offset: {1}, Child Count: {2}, Child Node Type: {3}"
+        #       .format(node_id, hex(offset), child_count, hex(child_node_type)))
+
+        if child_node_type == NodeType.Node and child_count > 0:
+            children = []
+            for index in range(0, child_count):
+                child = self.get_node(offset)
+                node[child[0]] = child[1]
+                offset += 0x08
+            return node
+
+        # Node = 0x00
+        # Boolean = 0x00
+        # Float = 0x01
+        # Int = 0x02
+        # Vector2 = 0x03
+        # Vector3 = 0x04
+        # Vector4 = 0x06
+        # String = 0x07
+        # Actor = 0x08
+        # UnknownString = 0x0f
+        # UnknownUnsignedInt = 0x11
+        # String2 = 0x14
+
+        elif child_node_type == NodeType.Boolean:
+            value = struct.unpack('<I', self.data[offset:offset + 0x04])[0]
+            value = True if value == 1 else False
+            node[node_id] = value
+
+        elif child_node_type == NodeType.Float:
+            value = struct.unpack('<f', self.data[offset:offset + 0x04])[0]
+            node[node_id] = value
+
+        elif child_node_type == NodeType.Int:
+            value = struct.unpack('<I', self.data[offset:offset + 0x04])[0]
+            node[node_id] = value
+
+        elif child_node_type == NodeType.String:
+            value = self.data[offset:].decode('utf-8')
+            value = value.split('\x00')
+            value = value[0]
+            node[node_id] = value
+
+        elif child_node_type == NodeType.Actor:
+            value = self.data[offset:].decode('utf-8')
+            value = value.split('\x00')
+            value = value[0]
+            node[node_id] = value
+
+        elif child_node_type == NodeType.String2:
+            value = self.data[offset:].decode('utf-8')
+            value = value.split('\x00')
+            value = value[0]
+            node[node_id] = value
 
         else:
-            self.getValue(offset)
+            value = self.data[offset:offset + 0x04]
 
-    def getValue(self, offset):
-        print(
-            "Address: ", hex(offset),
-            "\nID: ", DataTypeParser.byteHex(self.id),
-            "\nType: ", NodeType.Names[self.type]
-        )
-        if self.type is NodeType.Boolean:
-            self.value = struct.unpack("<?", self.contents[0x04:0x04 + 0x01])[0]
-            print("Boolean: ", self.value)
-
-        elif self.type is NodeType.Float:
-            self.value = struct.unpack("<f", self.contents[0x04:0x04 + 0x04])[0]
-            print("Float: ", self.value)
-
-        elif self.type is NodeType.Int:
-            self.value = struct.unpack("<I", self.contents[0x04:0x04 + 0x04])[0]
-            print("Int: ", self.value)
-
-        elif self.type is NodeType.Vector2:
-            pass
-
-        elif self.type is NodeType.Vector3:
-            pass
-
-        elif self.type is NodeType.Unknown0x05:
-            pass
-
-        elif self.type is NodeType.Vector4:
-            pass
-
-        elif self.type is NodeType.String:
-            pass
-
-        elif self.type is NodeType.Actor:
-            self.value = NodeType.getActor(self.contents, 0x04)
-            print("Actor: ", DataTypeParser.byteHex(self.value))
-
-        elif self.type is NodeType.UnknownString:
-            pass
-
-        elif self.type is NodeType.UnknownUnsignedInt:
-            pass
-
-        elif self.type is NodeType.String2:
-            self.value = struct.unpack("<I", self.contents[0x04:0x04 + 0x04])[0]
-            print("String2: ", self.value)
-
-        else:
-            pass
-        print("\n")
-
-
-def aampExtract(fileContents):
-    print("Extracting AAMP...")
-
-    aampVersion = uint32(fileContents, 0x04, "<")
-
-    fileSize = uint32(fileContents, 0x0c, "<")
-    stringSize = len(fileContents)
-
-    assert fileSize == stringSize, \
-        "File size checksum failed, calculated %r but actually saw %r" % (fileSize, stringSize)
-
-    fileExtensionLength = uint32(fileContents, 0x14, "<")
-    fileExtension = getString(fileContents[0x30:0x30 + fileExtensionLength])
-
-    rootNodesCount = uint32(fileContents, 0x18, "<")
-    rootNodeChildCount = uint32(fileContents, 0x1c, "<")
-    totalNodes = uint32(fileContents, 0x20, "<") + rootNodesCount + rootNodeChildCount
-    # print("root nodes: ", rootNodesCount)
-    # print("total nodes: ", totalNodes)
-
-    dataBufferSize = uint32(fileContents, 0x24, "<")
-    stringBufferSize = uint32(fileContents, 0x28, "<")
-
-    strings = fileContents[fileSize - stringBufferSize:fileSize]
-    stringBuffer = []
-    searchToggle = False
-
-    for index in range(0, len(strings)):
-        if strings[index] == 0x00:
-            searchToggle = False
-            continue
-
-        if searchToggle is True and strings[index] != 0x00:
-            continue
-
-        stringBuffer.append(getString(strings[index:len(strings)]))
-        searchToggle = True
-
-    print(stringBuffer)
-
-    dataBuffer = fileContents[fileSize - stringBufferSize - dataBufferSize:fileSize - stringBufferSize]
-
-    for index in range(0, int(dataBufferSize / 4)):
-        print(index, uint32(dataBuffer, index * 4, "<"))
-
-    filePosition = 0x30 + fileExtensionLength
-    nodeAddress = filePosition
-
-    nodeId = fileContents[nodeAddress:nodeAddress + 0x04]
-    assert nodeId == bytes([0x6c, 0xcb, 0xf6, 0xa4]), \
-        "Invalid root node identifier, expected 6C CB F6 A4 but saw %r" % nodeId
-
-    nodeOffset = nodeAddress + (uint16(fileContents, nodeAddress + 0x08, "<") * 4)
-    rootChildCount = uint16(fileContents, nodeAddress + 0x0a, "<")
-
-    # print("node offset:", nodeOffset)
-    # print("node length:", rootChildCount)
-    print("Root Node:", \
-          "\nid: ", nodeId, \
-          "\naddress: ", hex(nodeAddress), \
-          "\nchild count: ", rootChildCount, \
-          "\nchild node offset: ", hex(nodeOffset), \
-          "\nnode depth: ", 0, \
-          "\n\n")
-
-    nodeAddress = nodeOffset
-
-    aampXml = ElementTree.Element("aamp", {
-        "version": str(aampVersion),
-        "file-size": str(fileSize),
-        "data-buffer-size": str(dataBufferSize),
-        "string-buffer-size": str(stringBufferSize)
-    })
-
-    # get child nodes
-    for i in range(0, rootChildCount):
-        print("current location: ", hex(filePosition))
-        getNode(fileContents, nodeAddress, 1)
-
-        childCount = uint8(fileContents, nodeAddress + 0x06, "<")
-        nodeAddress = nodeAddress + childCount * 0x08
+        return node_id, value
 
 
 def main():
-    print("AAMPExtract by zephenryus")
+    parser = argparse.ArgumentParser(description="Parse the Legend of Zelda: Breath of the Wild aamp files to xml")
+    parser.add_argument("filename", type=str, help="File to be parsed.")
+    parser.add_argument("-x", "--xml",
+                        help="Exports data as a xml file (default)",
+                        action="store_true")
+    parser.add_argument("-y", "--yaml",
+                        help="Exports data as a yaml file",
+                        action="store_true")
+    parser.add_argument("-j", "--json",
+                        help="Exports data as a json file",
+                        action="store_true")
+    parser.add_argument("-a", "--all",
+                        help="Exports data as a xml, yaml and json file",
+                        action="store_true")
 
-    if len(sys.argv) != 2:
-        print("Usage: <inputFile>")
-        sys.exit(1)
+    args = parser.parse_args()
 
-    with open(sys.argv[1], "rb") as aampFile:
-        fileContents = aampFile.read()
+    aamp = AAMP(args.filename)
 
-    magic = fileContents[0:4]
+    if args.all:
+        args.yaml = True
+        args.json = True
+        args.xml = True
 
-    if magic == b"AAMP":
-        AAMP(fileContents)
+    if args.yaml:
+        save_as_yaml(args, aamp)
 
-    else:
-        print("Unknown File Format: First 4 bytes of file must be AAMP")
-        sys.exit(1)
+    if args.json:
+        save_as_json(args, aamp)
+
+    if args.xml:
+        save_as_xml(args, aamp)
+
+    if not args.yaml and not args.json and not args.xml:
+        save_as_xml(args, aamp)
+
+
+def save_as_yaml(args, byml):
+    filename = os.path.basename(args.filename)
+    print('Saving {0}.yaml...'.format(filename))
+    file = codecs.open(args.filename + '.yaml', 'w', 'utf-8')
+    yaml.dump(byml.data_object, file, allow_unicode=True)
+    file.close()
+
+
+def save_as_json(args, byml):
+    filename = os.path.basename(args.filename)
+    print('Saving {0}.json...'.format(filename))
+    file = codecs.open(args.filename + '.json', 'w', 'utf-8')
+    json.dump(byml.data_object, file, ensure_ascii=False, sort_keys=True, indent=4, separators=(',', ': '))
+    file.close()
+
+
+def save_as_xml(args, byml):
+    from xml.dom.minidom import parseString
+    filename = os.path.basename(args.filename)
+    path = os.path.dirname(os.path.abspath(args.filename))
+    base_filename = os.path.splitext(filename)[0]
+    print('Saving {0}...'.format(path + '\\' + base_filename + '.xml'))
+    file = codecs.open(path + '\\' + base_filename + '.xml', 'w', 'utf-8')
+    dom = dicttoxml.dicttoxml(byml.data_object).decode('utf-8')
+    file.write(parseString(dom).toprettyxml())
+    file.close()
 
 
 if __name__ == "__main__":
