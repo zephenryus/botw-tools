@@ -124,7 +124,7 @@ class BYML:
 
         for index in range(0, length):
             string_offset = struct.unpack('>I', self.data[next_node:next_node + 0x04])[0] + pos
-            table.append(self.data[string_offset:].split(b'\x00', 1)[0].decode("UTF-8"))
+            table.append(self.data[string_offset:].split(b'\x00', 1)[0].decode("utf_8", 'strict'))
             next_node += 0x04
         return table
 

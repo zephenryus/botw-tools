@@ -1,4 +1,6 @@
 import argparse
+import codecs
+import json
 import sys
 import os
 
@@ -21,10 +23,10 @@ class HGHT:
             "size": 0x100,
             "height_max": 0xffff,
             "extension": ".hght",
-            "color_table": gradient_maps.Terrain,
-            # "color_table": gradient_maps.GrayScale,
-            "color_mode": COLOR_MODE_VALUE
-            # "color_mode": COLOR_MODE_GRADIENT
+            # "color_table": gradient_maps.Terrain,
+            "color_table": gradient_maps.GrayScale,
+            # "color_mode": COLOR_MODE_VALUE
+            "color_mode": COLOR_MODE_GRADIENT
         },
         "water": {
             "data_length": 2,
@@ -70,6 +72,7 @@ class HGHT:
         is_grass = flags[3]
         is_composite = flags[4]
         is_gray_scale = flags[5]
+        is_json = flags[6]
 
         filename = os.path.splitext(path)[0]
         size = 0x100
@@ -87,7 +90,7 @@ class HGHT:
                 if os.path.isfile(filename + botwMap['extension']):
                     self.create_map(filename, botwMap['data_length'], botwMap['padding'], botwMap['block_size'],
                                     botwMap['size'], botwMap['height_max'], botwMap['extension'],
-                                    botwMap['color_table'], botwMap['color_mode'])
+                                    botwMap['color_table'], botwMap['color_mode'], is_json)
                 else:
                     print("\033[93mSkipping " + filename + botwMap['extension'] + " because it does not exist\033[0m")
             index += 1
@@ -101,7 +104,7 @@ class HGHT:
         return
 
     def create_map(self, filename, data_length=1, padding=0, block_size=1, size=0x100, height_max=0xffff,
-                   extension=".hght", gradient=None, color_mode=None):
+                   extension=".hght", gradient=None, color_mode=None, is_json=False):
         if gradient is None:
             gradient = [
                 [0.00, 0x00, 0x00, 0x00],
@@ -129,6 +132,9 @@ class HGHT:
         # else:
         print("Saving maps/" + os.path.basename(filename) + extension + ".png...")
         map_image.save(directory + os.path.basename(filename) + extension + ".png")
+
+        if is_json:
+            self.export_json(height_map, filename + extension)
 
     @staticmethod
     def get_height_map(data, read_bytes=2, size=0x100, padding=0, block_size=1):
@@ -193,10 +199,13 @@ class HGHT:
                 water_height = float(water_height_map[y * size + x] / 0xffff)
 
                 if water_height >= terrain_height:
-                    depth = water_height - terrain_height
-                    color = self.lerp_rgb(self.get_height_color(depth, gradient_maps.WaterDepth), depth)
+                    # depth = water_height - terrain_height
+                    # color = self.lerp_rgb(self.get_height_color(depth, gradient_maps.WaterDepth), depth)
+                    color = self.lerp_rgb(self.get_height_color(water_height, gradient_maps.GrayScale), water_height)
                 else:
-                    color = self.lerp_rgb(self.get_height_color(terrain_height, gradient_maps.Terrain), terrain_height)
+                    # color = self.lerp_rgb(self.get_height_color(terrain_height, gradient_maps.Terrain), terrain_height)
+                    color = self.lerp_rgb(self.get_height_color(terrain_height, gradient_maps.GrayScale),
+                                          terrain_height)
                 composite_map_image.putpixel((x, y), color)
 
         print("Saving " + os.path.basename(filename) + ".composite.png...")
@@ -234,6 +243,14 @@ class HGHT:
                 break
 
         return last_color, current_color
+
+    def export_json(self, data, filename):
+        path = os.path.dirname(filename)
+        filename = os.path.basename(filename)
+        print('Saving maps/{0}.json...'.format(filename))
+        file = codecs.open(path + '/maps/' + filename + '.json', 'w', 'utf-8')
+        json.dump(data, file, ensure_ascii=False, sort_keys=True, indent=4, separators=(',', ': '))
+        file.close()
 
     @staticmethod
     def lookup_color_table(value, color_table):
@@ -278,34 +295,47 @@ def main():
     parser.add_argument("-gs", "--grayscale",
                         help="Generate as gray scale map",
                         action="store_true")
+    parser.add_argument("-j", "--json",
+                        help="Generate a json file",
+                        action="store_true")
     args = parser.parse_args()
 
-    image_types = (False, False, False, False, False, False)
+    image_types = (False, False, False, False, False, False, False)
 
     if args.terrain:
-        image_types = (True, image_types[1], image_types[2], image_types[3], image_types[4], image_types[5])
+        image_types = (
+            True, image_types[1], image_types[2], image_types[3], image_types[4], image_types[5], image_types[6])
 
     if args.water:
-        image_types = (image_types[0], True, image_types[2], image_types[3], image_types[4], image_types[5])
+        image_types = (
+            image_types[0], True, image_types[2], image_types[3], image_types[4], image_types[5], image_types[6])
 
     if args.material:
-        image_types = (image_types[0], image_types[1], True, image_types[3], image_types[4], image_types[5])
+        image_types = (
+            image_types[0], image_types[1], True, image_types[3], image_types[4], image_types[5], image_types[6])
 
     if args.grass:
-        image_types = (image_types[0], image_types[1], image_types[2], True, image_types[4], image_types[5])
+        image_types = (
+            image_types[0], image_types[1], image_types[2], True, image_types[4], image_types[5], image_types[6])
 
     if args.composite:
-        image_types = (image_types[0], image_types[1], image_types[2], image_types[3], True, image_types[5])
+        image_types = (
+            image_types[0], image_types[1], image_types[2], image_types[3], True, image_types[5], image_types[6])
 
     if args.grayscale:
-        image_types = (image_types[0], image_types[1], image_types[2], image_types[3], image_types[4], True)
+        image_types = (
+            image_types[0], image_types[1], image_types[2], image_types[3], image_types[4], True, image_types[6])
+
+    if args.json:
+        image_types = (
+            image_types[0], image_types[1], image_types[2], image_types[3], image_types[4], image_types[5], True)
 
     if args.all:
-        image_types = (True, True, True, True, True, image_types[5])
+        image_types = (True, True, True, True, True, image_types[5], False)
 
     if not args.all and not args.terrain and not args.water and not args.material and not args.grass \
             and not args.composite:
-        image_types = (True, True, True, True, True, image_types[5])
+        image_types = (True, True, True, True, True, image_types[5], image_types[6])
 
     HGHT(
         args.filename,
