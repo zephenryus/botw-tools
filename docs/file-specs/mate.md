@@ -4,6 +4,7 @@
 | `0x01` | 1 | Byte | Unknown. |
 | `0x02` | 1 | Byte | Unknown. |
 | `0x03` | 1 | Byte | Unknown. |
+| `0x04` | 1 | Byte | Unknown. |
 
 ```
 [
