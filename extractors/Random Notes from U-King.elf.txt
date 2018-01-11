@@ -1,0 +1,44 @@
+Random Notes from U-King.elf
+
+0x02276540		Talking about Octoroks changing their "wig." Forest Octoroks can change their top if Link breaks it. They
+				scurry to another bush and use it as their "wig."
+
+0x022775A0		Death types
+
+0x02278FC0		Mentions FloorNum, could this be for the Trial of the Sword?
+
+0x0227AD00		References TwnObj_HyruleCastleAncientPole_Past_A_01, which are the big red towers surrounding Hyrule Castle
+
+0x0227C580		Reference RuneType
+
+0x0227F2C0		Lightning storm
+
+0x0227FA10		Ground battle with Riju against Divine Beast Vah Naboris
+
+0x02285060		Molduga battle
+
+0x022891F0		Bow of Light (Weapon_Bow_071)
+
+0x02289E10		Rain storm
+
+0x0228AE90		Photo album
+
+0x0229B0B0		Switch player equipment
+
+0x0229eaf0		Throwing boomerangs
+
+0x022a58a0		Warping
+
+0x024bfda0		Drop Tables
+
+0x0239fb1c		Loading tscb file for terrain (TSCB = Terrain Scene Binary!)
+
+0x024cf1e0		Blood Moon Event
+
+Dm_Npc_Zelda
+Dm_Npc_Zelda_Prince
+Dm_Npc_Zelda_Scientist
+Dm_Npc_Zelda_Sibyl
+Npc_Zelda_Miko
+Npc_Zelda_Princess
+Npc_Zelda_Scientist
