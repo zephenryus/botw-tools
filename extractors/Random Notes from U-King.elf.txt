@@ -31,6 +31,10 @@ Random Notes from U-King.elf
 
 0x024bfda0		Drop Tables
 
+0x0239fb1c		Loading tscb file for terrain (TSCB = Terrain Scene Binary!)
+
+0x024cf1e0		Blood Moon Event
+
 Dm_Npc_Zelda
 Dm_Npc_Zelda_Prince
 Dm_Npc_Zelda_Scientist

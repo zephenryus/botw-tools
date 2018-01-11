@@ -23,8 +23,8 @@ class HGHT:
             "size": 0x100,
             "height_max": 0xffff,
             "extension": ".hght",
-            # "color_table": gradient_maps.Terrain,
-            "color_table": gradient_maps.GrayScale,
+            "color_table": gradient_maps.Terrain,
+            # "color_table": gradient_maps.GrayScale,
             # "color_mode": COLOR_MODE_VALUE
             "color_mode": COLOR_MODE_GRADIENT
         },
