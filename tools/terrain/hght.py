@@ -1,13 +1,16 @@
 import argparse
 import codecs
 import json
+import struct
 import sys
 import os
 
 from PIL import Image
 
-# import src.extractors.gradientmaps as gradient_maps
-import gradientmaps as gradient_maps
+import src.tools.terrain.gradientmaps as gradient_maps
+
+
+# import gradientmaps as gradient_maps
 
 
 class HGHT:
@@ -23,8 +26,8 @@ class HGHT:
             "size": 0x100,
             "height_max": 0xffff,
             "extension": ".hght",
-            "color_table": gradient_maps.Terrain,
-            # "color_table": gradient_maps.GrayScale,
+            # "color_table": gradient_maps.Terrain,
+            "color_table": gradient_maps.GrayScale,
             # "color_mode": COLOR_MODE_VALUE
             "color_mode": COLOR_MODE_GRADIENT
         },
@@ -100,6 +103,9 @@ class HGHT:
                 self.create_composite_map(filename, gradient_maps.Terrain, gradient_maps.WaterDepth)
             else:
                 print("\033[93mSkipping composite because .hght or .water.extm do not exist\033[0m")
+
+        if os.path.isfile(filename + ".water.extm"):
+            self.create_water_texture(filename, gradient_maps.WaterTexture)
 
         return
 
@@ -199,13 +205,13 @@ class HGHT:
                 water_height = float(water_height_map[y * size + x] / 0xffff)
 
                 if water_height >= terrain_height:
-                    # depth = water_height - terrain_height
-                    # color = self.lerp_rgb(self.get_height_color(depth, gradient_maps.WaterDepth), depth)
-                    color = self.lerp_rgb(self.get_height_color(water_height, gradient_maps.GrayScale), water_height)
+                    depth = water_height - terrain_height
+                    color = self.lerp_rgb(self.get_height_color(depth, gradient_maps.WaterDepth), depth)
+                    # color = self.lerp_rgb(self.get_height_color(water_height, gradient_maps.GrayScale), water_height)
                 else:
-                    # color = self.lerp_rgb(self.get_height_color(terrain_height, gradient_maps.Terrain), terrain_height)
-                    color = self.lerp_rgb(self.get_height_color(terrain_height, gradient_maps.GrayScale),
-                                          terrain_height)
+                    color = self.lerp_rgb(self.get_height_color(terrain_height, gradient_maps.Terrain), terrain_height)
+                    # color = self.lerp_rgb(self.get_height_color(terrain_height, gradient_maps.GrayScale),
+                    #                       terrain_height)
                 composite_map_image.putpixel((x, y), color)
 
         print("Saving " + os.path.basename(filename) + ".composite.png...")
@@ -214,6 +220,38 @@ class HGHT:
             os.makedirs(directory)
 
         composite_map_image.save(directory + os.path.basename(filename) + ".composite.png", "PNG")
+
+    def create_water_texture(self, filename, palette):
+        size = 0x100
+        water_texture_image = Image.new("RGB", (size, size))
+
+        print("Reading composite data...")
+        data = open(filename + '.water.extm', 'rb')
+
+        texture_map = [any] * size * size
+
+        for y in range(0, int(size / 4)):
+            for x in range(0, int(size / 4)):
+                data.seek(0x7, 1)
+                color_index = struct.unpack('<B', data.read(0x1))[0]
+                if color_index < len(palette):
+                    color = (
+                        palette[color_index]['color']['r'],
+                        palette[color_index]['color']['g'],
+                        palette[color_index]['color']['b']
+                    )
+                    print(color)
+
+                    for y2 in range(0, 4):
+                        for x2 in range(0, 4):
+                            # texture_map[(y * 4 + y2) * size + x * 4 + x2] = color_index
+                            water_texture_image.putpixel((x * 4 + x2, y * 4 + y2), color)
+
+        directory = os.path.dirname(filename + '.hght') + "\\maps\\"
+        if not os.path.exists(directory):
+            os.makedirs(directory)
+
+        water_texture_image.save(directory + os.path.basename(filename) + ".water.tex.png", "PNG")
 
     @staticmethod
     def lerp_rgb(color_range_data, t):
@@ -291,6 +329,9 @@ def main():
                         action="store_true")
     parser.add_argument("-c", "--composite",
                         help="Generate terrain and water composite map",
+                        action="store_true")
+    parser.add_argument("--water-texture",
+                        help="Generate water texture map",
                         action="store_true")
     parser.add_argument("-gs", "--grayscale",
                         help="Generate as gray scale map",
