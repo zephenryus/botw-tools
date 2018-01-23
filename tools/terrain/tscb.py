@@ -97,7 +97,7 @@ class TSCB:
                 else:
                     extra_info_array = ()
 
-            file.write("{0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}, {8}, {9}, {10}, {11}, {12}, \"{13}\"\n".format(pos_x, pos_y, scale, unk00, unk01, unk02, unk03, unk04, file_base, unk05, unk06, extra_info_array_flag, extra_info_array_length, str(extra_info_array)))
+            file.write("{0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}, \"{8}\", {9}, {10}, {11}, {12}, \"{13}\"\n".format(pos_x, pos_y, scale, unk00, unk01, unk02, unk03, unk04, file_base, unk05, unk06, extra_info_array_flag, extra_info_array_length, str(extra_info_array)))
         file.close()
 
 
