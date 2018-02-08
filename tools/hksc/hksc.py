@@ -35,45 +35,45 @@ class HKSC:
             exit(0)
 
         version, unk01, bom, unk02, unk03, section_count, unk04, unk05 = \
-            struct.unpack('>xxxxIBBBBIIxxxxxxxxI', file.read(0x20))
+            struct.unpack('>4xI4BII8xI', file.read(0x20))
         # print(version, unk01, bom, unk02, unk03, section_count, unk04, unk05)
 
         version_name = file.read(0x10).split(b'\x00')[0]
         # print(version_name.decode('utf-8'))
 
-        unk_offset = struct.unpack('>xxxxHH', file.read(0x08))
+        unk_offset = struct.unpack('>4xHH', file.read(0x08))
         if unk_offset[1] != 0:
             file.seek(-0x08, 1)
-            unk_offset = struct.unpack('>xxxxHHHxxxxxxxxxxxxxx', file.read(0x18))
+            unk_offset = struct.unpack('>4x3H14x', file.read(0x18))
 
         sections = []
 
         csv_name = datetime.datetime.today().strftime('%Y-%m-%dT%H-%M-%S.%f') + '-sections.csv'
         csv = open(csv_name, 'w')
-        csv.write('name, start_offset, unk_offset0, unk_offset1, unk_offset2, unk_offset3, unk_offset4, size\n')
+        csv.write('name, start_offset, offset_0, offset_1, offset_2, offset_3, offset_4, offset_5\n')
 
         for index in range(0, section_count):
             section = {
                 'section_name': file.read(0x14).split(b'\x00')[0],
                 'section_start': struct.unpack('>I', file.read(0x04))[0],
+                'offset_0': struct.unpack('>I', file.read(0x04))[0],
                 'offset_1': struct.unpack('>I', file.read(0x04))[0],
                 'offset_2': struct.unpack('>I', file.read(0x04))[0],
                 'offset_3': struct.unpack('>I', file.read(0x04))[0],
                 'offset_4': struct.unpack('>I', file.read(0x04))[0],
-                'offset_5': struct.unpack('>I', file.read(0x04))[0],
-                'section_size': struct.unpack('>I', file.read(0x04))[0]
+                'offset_5': struct.unpack('>I', file.read(0x04))[0]
             }
 
             csv.write('{0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}\n'
                       .format(
                 section['section_name'].decode('utf-8'),
                 hex(section['section_start']),
+                hex(section['offset_0']),
                 hex(section['offset_1']),
                 hex(section['offset_2']),
                 hex(section['offset_3']),
                 hex(section['offset_4']),
-                hex(section['offset_5']),
-                hex(section['section_size'])
+                hex(section['offset_5'])
             ))
 
             file.seek(0x10, 1)
@@ -97,7 +97,7 @@ class HKSC:
         file.seek(sections[1]['section_start'] + offset)
 
         next_file_offset, types_count, data_count = \
-            struct.unpack('>IxxxxIxxxxxxxxIxxxxxxxx', file.read(0x20))
+            struct.unpack('>I4xI8xI8x', file.read(0x20))
 
         types_offset = offset + sections[1]['section_start'] + 0x20
         data_offset = offset + types_offset + types_count * 0x10
