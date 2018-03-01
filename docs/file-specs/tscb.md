@@ -12,22 +12,22 @@ TSCB files are **t**errain **sc**ene **b**inary files
 
 ### Header Structure
 
-```c#
+```c
 struct TSCBHeader {
-    char[4]     magic;
-    ushort      version;
-    ushort      unknown0x06;
-    uint        unknown0x08;
-    uint        file_base_offset;
-    float       unknown0x10;
-    float       unknown0x14;
-    uint        material_info_array_length;
-    uint        area_array_length;
-    uint        unknown0x20;
-    uint        unknown0x24;
-    float       world_scale;
-    uint        unknown0x2c;
-}
+	char           signature[4];
+	unsigned short version;
+	unsigned short unknown0x06;
+	unsigned int   unknown0x08;
+	unsigned int   file_base_offset;
+	float          unknown0x10;
+	float          unknown0x14;
+	unsigned int   material_info_array_length;
+	unsigned int   area_array_length;
+	unsigned int   unknown0x20;
+	unsigned int   unknown0x24;
+	float          world_scale;
+	unsigned int   unknown0x2c;
+};
 ```
 
 | Offset | Length | Type | Description |
