@@ -53,133 +53,135 @@
 
 ## By File Extension
 
-* `agstats` Format: `stat`
-* `arc` Format: `arc`
-* `baacl` Format: `aacl`
-* `baatn` Format: `aatn`
-* `baglblm` Format: [`aamp`](aamp.md)
-* `baglccr` Format: [`aamp`](aamp.md)
-* `baglclwd` Format: [`aamp`](aamp.md)
-* `baglcube` Format: [`aamp`](aamp.md)
-* `bagldof` Format: [`aamp`](aamp.md)
-* `baglenv` Format: [`aamp`](aamp.md)
-* `baglenvset` Format: [`aamp`](aamp.md)
-* `baglfila` Format: [`aamp`](aamp.md)
-* `bagllmap` Format: [`aamp`](aamp.md)
-* `bagllref` Format: [`aamp`](aamp.md)
-* `baglmf` Format: [`aamp`](aamp.md)
-* `baglshpp` Format: [`aamp`](aamp.md)
-* `bagst` Format: `agst`
-* `baiprog` Format: [`aamp`](aamp.md)
-* `baischedule` Format: [`byml`](byml.md)
-* `baniminfo` Format: [`byml`](byml.md)
-* `baroc` Format: `aroc`
-* `bars` Format: `bars`
-* `bas` Format: [`aamp`](aamp.md)
-* `baslist` Format: [`aamp`](aamp.md)
-* `bassetting` Format: [`aamp`](aamp.md)
-* `batcl` Format: [`aamp`](aamp.md)
-* `batcllist` Format: [`aamp`](aamp.md)
-* `bawareness` Format: [`aamp`](aamp.md)
-* `bawntable` Format: [`aamp`](aamp.md)
-* `bbonectrl` Format: [`aamp`](aamp.md)
-* `bcamanim` Format: `fres`
-* `bchemical` Format: [`aamp`](aamp.md)
-* `bchmres` Format: [`aamp`](aamp.md)
-* `bdemo` Format: [`aamp`](aamp.md)
-* `bdgnenv` Format: [`aamp`](aamp.md)
-* `bdmgparam` Format: [`aamp`](aamp.md)
-* `bdrop` Format: [`aamp`](aamp.md)
-* `beco` Format: `eco`
-* `belnk` Format: `xlnk`
-* `bfevfl` Format: `bfev`
-* `bfevtm` Format: `bfev`
-* `bffnt` Format: `ffnt`
-* `bflan` Format: `flan`
-* `bflim` Format: `flim`
-* `bflyt` Format: `flyt`
-* `bfres` Format: `fres`
-* `bfsar` Format: `fsar`
-* `bfsha` Format: `fsha`
-* `bfstm` Format: `fstm`
-* `bgapkginfo` Format: [`aamp`](aamp.md)
-* `bgapkglist` Format: [`aamp`](aamp.md)
-* `bgdata` Format: [`byml`](byml.md)
-* `bgenv` Format: [`aamp`](aamp.md)
-* `bglght` Format: [`aamp`](aamp.md)
-* `bgmsconf` Format: [`aamp`](aamp.md)
-* `bgparamlist` Format: [`aamp`](aamp.md)
-* `bgsdw` Format: [`aamp`](aamp.md)
-* `bgsh` Format: `gfx2`
-* `bgsvdata` Format: [`byml`](byml.md)
-* `bin` Format: `unknown`
-* `bitemico` Format: `fres`
-* `bksky` Format: [`aamp`](aamp.md)
-* `blal` Format: `blal`
-* `blifecondition` Format: [`aamp`](aamp.md)
-* `blod` Format: [`aamp`](aamp.md)
-* `blwp` Format: `prod`
-* `bmapopen` Format: `fres`
-* `bmaptex` Format: `fres`
-* `bmodellist` Format: [`aamp`](aamp.md)
-* `bmscdef` Format: [`aamp`](aamp.md)
-* `bmscinfo` Format: [`aamp`](aamp.md)
-* `bnetfp` Format: [`aamp`](aamp.md)
-* `bofx` Format: `fres`
-* `bphyscharcon` Format: [`aamp`](aamp.md)
-* `bphyscontact` Format: [`aamp`](aamp.md)
-* `bphysics` Format: [`aamp`](aamp.md)
-* `bphyslayer` Format: [`aamp`](aamp.md)
-* `bphysmaterial` Format: [`aamp`](aamp.md)
-* `bphyssb` Format: [`aamp`](aamp.md)
-* `bphyssubmat` Format: [`aamp`](aamp.md)
-* `bptclconf` Format: [`aamp`](aamp.md)
-* `bquestpack` Format: [`byml`](byml.md)
-* `brecipe` Format: [`aamp`](aamp.md)
-* `breviewtex` Format: `fres`
-* `brgbw` Format: [`aamp`](aamp.md)
-* `brgcon` Format: [`aamp`](aamp.md)
-* `brgconfig` Format: [`aamp`](aamp.md)
-* `brgconfiglist` Format: [`aamp`](aamp.md)
-* `bsfbt` Format: [`aamp`](aamp.md)
-* `bsft` Format: [`aamp`](aamp.md)
-* `bshop` Format: [`aamp`](aamp.md)
-* `bslnk` Format: `xlnk`
-* `bstftex` Format: `fres`
-* `btsnd` Format: `btsnd`
-* `bumii` Format: [`aamp`](aamp.md)
-* `bvege` Format: [`aamp`](aamp.md)
-* `bwinfo` Format: [`aamp`](aamp.md)
-* `bxml` Format: [`aamp`](aamp.md)
-* `byaml` Format: [`byml`](byml.md)
-* `byml` Format: [`byml`](byml.md)
-* `dds` Format: `dds`
-* `elf` Format: [`elf`](elf.md)
-* `esetlist` Format: `eftb`
-* `extm` Format: `extm`
-* `fmc` Format: `fmc`
-* `fxparam` Format: `xml`
-* `genvres` Format: `fres`
-* `gsh` Format: `gfx2`
-* `gtx` Format: `gfx2`
-* `h264` Format: `h264`
-* `hght` Format: [`hght`](hght.md)
-* `hkcl` Format: `havok`
-* `hknm2` Format: `havok`
-* `hkrb` Format: `havok`
-* `hkrg` Format: `havok`
-* `hksc` Format: `havok`
-* `jpg` Format: `jpg`
-* `mate` Format: [`mate`](mate.md)
-* `msbt` Format: `msgs`
-* `mubin` Format: [`byml`](byml.md)
-* `png` Format: `png`
-* `raw` Format: `raw`
-* `rsizetable` Format: `rstb`
-* `sav` Format: `sav`
-* `sharcb` Format: `bahs`
-* `skybin` Format: `skybin`
-* `tga` Format: `tga`
-* `tscb` Format: [`tscb`](tscb.md)
-* `txt` Format: `txt`
-* `xml` Format: `xml`
+| Extension | Format |
+|:--|--:|
+| `agstats` | `stat` |
+| `arc` | `arc` |
+| `baacl` | `aacl` |
+| `baatn` | `aatn` |
+| `baglblm` | [`aamp`](aamp.md) |
+| `baglccr` | [`aamp`](aamp.md) |
+| `baglclwd` | [`aamp`](aamp.md) |
+| `baglcube` | [`aamp`](aamp.md) |
+| `bagldof` | [`aamp`](aamp.md) |
+| `baglenv` | [`aamp`](aamp.md) |
+| `baglenvset` | [`aamp`](aamp.md) |
+| `baglfila` | [`aamp`](aamp.md) |
+| `bagllmap` | [`aamp`](aamp.md) |
+| `bagllref` | [`aamp`](aamp.md) |
+| `baglmf` | [`aamp`](aamp.md) |
+| `baglshpp` | [`aamp`](aamp.md) |
+| `bagst` | `agst` |
+| `baiprog` | [`aamp`](aamp.md) |
+| `baischedule` | [`byml`](byml.md) |
+| `baniminfo` | [`byml`](byml.md) |
+| `baroc` | `aroc` |
+| `bars` | `bars` |
+| `bas` | [`aamp`](aamp.md) |
+| `baslist` | [`aamp`](aamp.md) |
+| `bassetting` | [`aamp`](aamp.md) |
+| `batcl` | [`aamp`](aamp.md) |
+| `batcllist` | [`aamp`](aamp.md) |
+| `bawareness` | [`aamp`](aamp.md) |
+| `bawntable` | [`aamp`](aamp.md) |
+| `bbonectrl` | [`aamp`](aamp.md) |
+| `bcamanim` | `fres` |
+| `bchemical` | [`aamp`](aamp.md) |
+| `bchmres` | [`aamp`](aamp.md) |
+| `bdemo` | [`aamp`](aamp.md) |
+| `bdgnenv` | [`aamp`](aamp.md) |
+| `bdmgparam` | [`aamp`](aamp.md) |
+| `bdrop` | [`aamp`](aamp.md) |
+| `beco` | `eco` |
+| `belnk` | `xlnk` |
+| `bfevfl` | `bfev` |
+| `bfevtm` | `bfev` |
+| `bffnt` | `ffnt` |
+| `bflan` | `flan` |
+| `bflim` | `flim` |
+| `bflyt` | `flyt` |
+| `bfres` | `fres` |
+| `bfsar` | `fsar` |
+| `bfsha` | `fsha` |
+| `bfstm` | `fstm` |
+| `bgapkginfo` | [`aamp`](aamp.md) |
+| `bgapkglist` | [`aamp`](aamp.md) |
+| `bgdata` | [`byml`](byml.md) |
+| `bgenv` | [`aamp`](aamp.md) |
+| `bglght` | [`aamp`](aamp.md) |
+| `bgmsconf` | [`aamp`](aamp.md) |
+| `bgparamlist` | [`aamp`](aamp.md) |
+| `bgsdw` | [`aamp`](aamp.md) |
+| `bgsh` | `gfx2` |
+| `bgsvdata` | [`byml`](byml.md) |
+| `bin` | `unknown` |
+| `bitemico` | `fres` |
+| `bksky` | [`aamp`](aamp.md) |
+| `blal` | `blal` |
+| `blifecondition` | [`aamp`](aamp.md) |
+| `blod` | [`aamp`](aamp.md) |
+| `blwp` | `prod` |
+| `bmapopen` | `fres` |
+| `bmaptex` | `fres` |
+| `bmodellist` | [`aamp`](aamp.md) |
+| `bmscdef` | [`aamp`](aamp.md) |
+| `bmscinfo` | [`aamp`](aamp.md) |
+| `bnetfp` | [`aamp`](aamp.md) |
+| `bofx` | `fres` |
+| `bphyscharcon` | [`aamp`](aamp.md) |
+| `bphyscontact` | [`aamp`](aamp.md) |
+| `bphysics` | [`aamp`](aamp.md) |
+| `bphyslayer` | [`aamp`](aamp.md) |
+| `bphysmaterial` | [`aamp`](aamp.md) |
+| `bphyssb` | [`aamp`](aamp.md) |
+| `bphyssubmat` | [`aamp`](aamp.md) |
+| `bptclconf` | [`aamp`](aamp.md) |
+| `bquestpack` | [`byml`](byml.md) |
+| `brecipe` | [`aamp`](aamp.md) |
+| `breviewtex` | `fres` |
+| `brgbw` | [`aamp`](aamp.md) |
+| `brgcon` | [`aamp`](aamp.md) |
+| `brgconfig` | [`aamp`](aamp.md) |
+| `brgconfiglist` | [`aamp`](aamp.md) |
+| `bsfbt` | [`aamp`](aamp.md) |
+| `bsft` | [`aamp`](aamp.md) |
+| `bshop` | [`aamp`](aamp.md) |
+| `bslnk` | `xlnk` |
+| `bstftex` | `fres` |
+| `btsnd` | `btsnd` |
+| `bumii` | [`aamp`](aamp.md) |
+| `bvege` | [`aamp`](aamp.md) |
+| `bwinfo` | [`aamp`](aamp.md) |
+| `bxml` | [`aamp`](aamp.md) |
+| `byaml` | [`byml`](byml.md) |
+| `byml` | [`byml`](byml.md) |
+| `dds` | `dds` |
+| `elf` | [`elf`](elf.md) |
+| `esetlist` | `eftb` |
+| `extm` | `extm` |
+| `fmc` | `fmc` |
+| `fxparam` | `xml` |
+| `genvres` | `fres` |
+| `gsh` | `gfx2` |
+| `gtx` | `gfx2` |
+| `h264` | `h264` |
+| `hght` | [`hght`](hght.md) |
+| `hkcl` | `havok` |
+| `hknm2` | `havok` |
+| `hkrb` | `havok` |
+| `hkrg` | `havok` |
+| `hksc` | `havok` |
+| `jpg` | `jpg` |
+| `mate` | [`mate`](mate.md) |
+| `msbt` | `msgs` |
+| `mubin` | [`byml`](byml.md) |
+| `png` | `png` |
+| `raw` | `raw` |
+| `rsizetable` | `rstb` |
+| `sav` | `sav` |
+| `sharcb` | `bahs` |
+| `skybin` | `skybin` |
+| `tga` | `tga` |
+| `tscb` | [`tscb`](tscb.md) |
+| `txt` | `txt` |
+| `xml` | `xml` |
