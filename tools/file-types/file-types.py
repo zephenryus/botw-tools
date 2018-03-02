@@ -1,183 +1,212 @@
+import json
 import os
 
+signatures = {
+    "b'<?xm'": 'xml',
+    "b'\\x00\\x11\"3'": 'eco',
+    "b'\\x7fELF'": 'elf',
+    "b'\\x89PNG'": 'png',
+    "b'AACL'": 'aacl',
+    "b'AAMP'": 'aamp',
+    "b'AATN'": 'aatn',
+    "b'AGST'": 'agst',
+    "b'AROC'": 'aroc',
+    "b'BAHS'": 'bahs',
+    "b'BARS'": 'bars',
+    "b'BFEV'": 'bfev',
+    "b'BLAL'": 'blal',
+    "b'BY\\x00\\x02'": 'byml',
+    "b'DDS '": 'dds',
+    "b'EFTB'": 'eftb',
+    "b'FFNT'": 'ffnt',
+    "b'FLAN'": 'flan',
+    "b'FLYT'": 'flyt',
+    "b'FRES'": 'fres',
+    "b'FSAR'": 'fsar',
+    "b'FSHA'": 'fsha',
+    "b'FSTM'": 'fstm',
+    "b'Gfx2'": 'gfx2',
+    "b'MsgS'": 'msgs',
+    "b'PrOD'": 'prod',
+    "b'RSTB'": 'rstb',
+    "b'SARC'": 'sarc',
+    "b'STAT'": 'stat',
+    "b'TSCB'": 'tscb',
+    "b'W\\xe0\\xe0W'": 'havok',
+    "b'XLNK'": 'xlnk',
+    "b'Yaz0'": 'yaz0',
+}
 
-class FileTypes:
-    byml = {
-        'signature': b'BY\x00\x02',
-        'name': 'byml',
-    }
-    prod = {
-        'signature': b'PrOD',
-        'name': 'prod'
-    }
-    aamp = {
-        'signature': b'AAMP',
-        'name': 'aamp'
-    }
-    bfev = {
-        'signature': b'BFEV',
-        'name': 'bfev'
-    }
-    ffnt = {
-        'signature': b'FFNT',
-        'name': 'ffnt'
-    }
-    flan = {
-        'signature': b'FLAN',
-        'name': 'flan'
-    }
-    flyt = {
-        'signature': b'FLYT',
-        'name': 'flyt'
-    }
-    flim = {
-        'signature': b'FLIM',
-        'name': 'flim'
-    }
-    fres = {
-        'signature': b'FRES',
-        'name': 'fres'
-    }
-    hknm = {
-        'signature': b'W\xe0\xe0W',
-        'name': 'hknm',
-        'description': 'Havok NavMesh'
-    }
-    yaz0 = {
-        'signature': b'Yaz0',
-        'name': 'yaz0'
-    }
-    fsha = {
-        'signature': b'FSHA',
-        'name': 'fsha'
-    }
-    bahs = {
-        'signature': b'BAHS',
-        'name': 'bahs'
-    }
-    gfx2 = {
-        'signature': b'Gfx2',
-        'name': 'gfx2'
-    }
-    png = {
-        'signature': b'\x89PNG',
-        'name': 'png'
-    }
-    hght = {
-        'extension': '.hght',
-        'name': 'hght'
-    }
-    extm = {
-        'extension': '.extm',
-        'name': 'extm'
-    }
-    mate = {
-        'extension': '.mate',
-        'name': 'mate'
-    }
+file_extensions = {
+    '.arc': 'arc',
+    '.bflim': 'flim',
+    '.btsnd': 'btsnd',
+    '.extm': 'extm',
+    '.fmc': 'fmc',
+    '.h264': 'h264',
+    '.hght': 'hght',
+    '.jpg': 'jpg',
+    '.mate': 'mate',
+    '.mp4': 'mp4',
+    '.raw': 'raw',
+    '.sav': 'sav',
+    '.skybin': 'skybin',
+    '.tga': 'tga',
+    '.txt': 'txt',
+    '.xml': 'xml',
+}
 
+logger = {
+    'file_count': 0,
+    'dir_count': 0,
+    'average_size': 0,
+    'total_size': 0,
 
-path = "C:\\botw-data\\decompressed"
+    'aacl': 0,
+    'aamp': 0,
+    'aatn': 0,
+    'agst': 0,
+    'arc': 0,
+    'aroc': 0,
+    'bahs': 0,
+    'bars': 0,
+    'bfev': 0,
+    'blal': 0,
+    'btsnd': 0,
+    'byml': 0,
+    'dds': 0,
+    'eco': 0,
+    'eftb': 0,
+    'elf': 0,
+    'extm': 0,
+    'ffnt': 0,
+    'flan': 0,
+    'flim': 0,
+    'flyt': 0,
+    'fmc': 0,
+    'fres': 0,
+    'fsar': 0,
+    'fsha': 0,
+    'fstm': 0,
+    'gfx2': 0,
+    'h264': 0,
+    'havok': 0,
+    'hght': 0,
+    'jpg': 0,
+    'mate': 0,
+    'mp4': 0,
+    'msgs': 0,
+    'png': 0,
+    'prod': 0,
+    'raw': 0,
+    'rstb': 0,
+    'sarc': 0,
+    'sav': 0,
+    'skybin': 0,
+    'stat': 0,
+    'tga': 0,
+    'tscb': 0,
+    'txt': 0,
+    'xlnk': 0,
+    'xml': 0,
+    'yaz0': 0,
 
-list_file_path = os.path.join(path, 'file-types-list.json')
+    'unknown': 0,
 
-
-def get_file_type(content, extension):
-    if content[0x00:0x04] == FileTypes.byml['signature']:
-        return FileTypes.byml['name']
-
-    elif content[0x00:0x04] == FileTypes.prod['signature']:
-        return FileTypes.prod['name']
-
-    elif content[0x00:0x04] == FileTypes.aamp['signature']:
-        return FileTypes.aamp['name']
-
-    elif content[0x00:0x04] == FileTypes.bfev['signature']:
-        return FileTypes.bfev['name']
-
-    elif content[0x00:0x04] == FileTypes.ffnt['signature']:
-        return FileTypes.ffnt['name']
-
-    elif content[0x00:0x04] == FileTypes.flan['signature']:
-        return FileTypes.flan['name']
-
-    elif content[0x00:0x04] == FileTypes.flyt['signature']:
-        return FileTypes.flyt['name']
-
-    elif content[0x00:0x04] == FileTypes.flim['signature']:
-        return FileTypes.flim['name']
-
-    elif content[0x00:0x04] == FileTypes.fres['signature']:
-        return FileTypes.fres['name']
-
-    elif content[0x00:0x04] == FileTypes.hknm['signature']:
-        return FileTypes.hknm['name']
-
-    elif content[0x00:0x04] == FileTypes.yaz0['signature']:
-        return FileTypes.yaz0['name']
-
-    elif content[0x00:0x04] == FileTypes.fsha['signature']:
-        return FileTypes.fsha['name']
-
-    elif content[0x00:0x04] == FileTypes.bahs['signature']:
-        return FileTypes.bahs['name']
-
-    elif content[0x00:0x04] == FileTypes.gfx2['signature']:
-        return FileTypes.gfx2['name']
-
-    elif content[0x00:0x04] == FileTypes.png['signature']:
-        return FileTypes.png['name']
-
-    elif extension == FileTypes.hght['extension']:
-        return FileTypes.hght['name']
-
-    elif extension == FileTypes.extm['extension']:
-        return FileTypes.extm['name']
-
-    elif extension == FileTypes.mate['extension']:
-        return FileTypes.mate['name']
-
-    else:
-        return 'unknown: ' + str(content[0x00:0x04])
+    'extensions': {}
+}
 
 
-with open(list_file_path, 'wb') as list_file:
-    list_file.write(b'{"fileStructure" : [')
+def get_file_types():
+    print('Scanning Files...')
+    path = "C:\\botw-data\\decompressed\\"
 
-    for root, subdirs, files in os.walk(path):
-        # print('--\n' + root)
+    yaz = open(os.path.dirname(os.path.realpath(__file__)) + '\\yaz0.txt', 'a')
+    yaz.close()
 
-        for subdir in subdirs:
-            dir_path = os.path.join(root, subdir)
+    file_structure = read_path(path)
 
-            print('subdirectory ' + subdir)
+    # Write json data
+    with open(os.path.dirname(os.path.realpath(__file__)) + '\\file-types.json', 'w') as json_output:
+        print('Saving json...')
+        json_output.write(json.dumps(file_structure, sort_keys=True, indent=4, separators=(',', ': ')))
 
-            list_file.write(('\t{ "path": "%s", "depth": %i, "file": "%s", "type": "%s", "size": %i },\r\n'
-                             % (
-                                 'vol' + dir_path[25:].replace('\\', '/') + '/',
-                                 dir_path[25:].count('\\') - 1,
-                                 os.path.basename(os.path.normpath(dir_path[25:].replace('\\', '/'))) + '/',
-                                 "dir",
-                                 0
-                                 )).encode('utf-8'))
+    # Write log file
+    with open(os.path.dirname(os.path.realpath(__file__)) + '\\log.txt', 'w') as json_output:
+        print('Logging stats...')
+        logger['average_size'] = logger['total_size'] / logger['file_count']
+        json_output.write(json.dumps(logger, indent=4, separators=(',', ': ')))
 
-        for filename in files:
-            file_path = os.path.join(root, filename)
 
-            print('file %s (full path: %s)' % (filename, file_path))
+def read_path(path):
+    file_structure = {}
+    for (dirpath, dirnames, filenames) in os.walk(path):
+        for dir_name in dirnames:
+            logger['dir_count'] += 1
+            file_structure[dir_name] = read_path(dirpath + dir_name + '\\')
 
-            with open(file_path, 'rb') as f:
-                f_content = f.read()
-                file_type = get_file_type(f_content, os.path.splitext(file_path)[1])
-                file_size = os.path.getsize(file_path)
+        file_structure['files'] = []
+        for file_name in filenames:
+            file_path = dirpath + file_name
 
-                list_file.write(('\t{ "path": "%s", "depth": %i, "name": "%s", "type": "%s", "size": %i },\r\n'
-                                 % (
-                                     file_path[25:].replace('\\', '/'),
-                                     file_path[25:].count('\\') - 1,
-                                     os.path.basename(file_path),
-                                     file_type,
-                                     file_size
-                                     )).encode('utf-8'))
+            file_data = {
+                'filename': file_name,
+                'path': '/vol' + os.path.dirname(os.path.realpath(file_path))[25:].replace('\\', '/') + '/',
+                'extension': os.path.splitext(file_name)[1]
+            }
 
-    list_file.write(b']}')
+            stats = os.stat(file_path)
+            file_data['size'] = stats.st_size
+
+            logger['file_count'] += 1
+            logger['total_size'] += stats.st_size
+
+            if logger['file_count'] % 1000 == 0:
+                print("{0} Files Scanned...".format(logger['file_count']))
+
+            with open(file_path, 'rb') as file:
+                file_data['signature'] = str(file.read(0x04))
+
+                if file_data['signature'] in signatures:
+                    file_data['type'] = signatures[file_data['signature']]
+                    logger[file_data['type']] += 1
+
+                elif file_data['extension'] in file_extensions:
+                    file_data['type'] = file_extensions[file_data['extension']]
+                    logger[file_data['type']] += 1
+
+                else:
+                    file_data['type'] = 'unknown'
+                    logger['unknown'] += 1
+
+                # Log file extension types
+                if file_data['extension'] in logger['extensions']:
+                    logger['extensions'][file_data['extension']]['count'] += 1
+
+                else:
+                    logger['extensions'][file_data['extension']] = {
+                        'count': 1,
+                        'type': file_data['type']
+                    }
+
+                if file_data['type'] == 'yaz0':
+                    with open(os.path.dirname(os.path.realpath(__file__)) + '\\yaz0.txt', 'a') as yaz:
+                        yaz.write(file_path + '\n')
+
+            file_structure['files'].append(file_data)
+
+        break
+
+    return file_structure
+
+
+def main():
+    get_file_types()
+
+    print('Scan Complete!')
+
+    exit(1)
+
+
+if __name__ == "__main__":
+    main()

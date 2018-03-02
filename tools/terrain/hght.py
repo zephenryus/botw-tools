@@ -149,7 +149,7 @@ class HGHT:
         for y in range(0, int(size / block_size)):
             for x in range(0, int(size / block_size)):
                 height = int.from_bytes(data.read(read_bytes), 'little')
-                data.read(padding)
+                data.seek(padding, 1)
 
                 for y2 in range(0, block_size):
                     for x2 in range(0, block_size):

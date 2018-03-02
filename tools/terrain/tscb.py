@@ -21,8 +21,8 @@ class TSCB:
         signature = self.data[0x00:0x04]
 
         if signature != b'TSCB':
-            print('\033[31mQuitting: {0} is not a binary YAML file\033[0m'.format(filename))
-            print('\033[31mExpected b\'BY\' but saw {0}\033[0m'.format(signature))
+            print('\033[31mQuitting: {0} is not a Terrain Scene file\033[0m'.format(filename))
+            print('\033[31mExpected b\'TSCB\' but saw {0}\033[0m'.format(signature))
             exit(0)
 
         # version

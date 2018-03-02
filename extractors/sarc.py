@@ -115,11 +115,11 @@ def yaz0_decompress(data):
     return out
 
 
-def sarc_extract(data, mode):
-    print("Reading SARC....")
+def sarc_extract(data, mode, filename):
+    print("Reading SARC {0}....".format(filename))
     pos = 6
 
-    name, ext = os.path.splitext(sys.argv[1])
+    name, ext = os.path.splitext(filename)
 
     if mode == 1:  # Don"t need to check again with normal SARC
         magic1 = data[0:4]
@@ -199,7 +199,7 @@ def sarc_extract(data, mode):
             string = get_str(data[pos:])
             pos += len(string)
 
-            while (data[pos]) == 0:
+            while pos <= len(data) and data[pos] == 0x00:
                 pos += 1  # Move to the next string
 
             strings.append(string)
@@ -294,10 +294,10 @@ def main():
 
     if magic == b"Yaz0":
         decompressed = yaz0_decompress(data)
-        sarc_extract(decompressed, 1)
+        sarc_extract(decompressed, 1, sys.argv[1])
 
     elif magic == b"SARC":
-        sarc_extract(data, 0)
+        sarc_extract(data, 0, sys.argv[1])
 
     else:
         print("Unknown File Format: First 4 bytes of file must be Yaz0 or SARC")

@@ -1,8 +1,11 @@
-file = "C:\\botw-data\\decompressed\\content\\Terrain\\A\\MainField\\5000000000.water.extm\\5000000000.water.extm"
+file = "C:\\botw-data\\src\\tools\\water-edit\\5000000000.water.extm.hex"
 
-with open(file, 'rb+') as file:
-    for index in range(0, 4096):
-        file.write(b'\x00\x80')
-        file.seek(0x06, 1)
+with open(file, 'rb') as file:
+    with open("C:\\botw-data\\src\\tools\\water-edit\\5000000000.water.extm\\5000000000.water.extm", 'rb+') as output:
+        for index in range(0, 4096):
+            output.write(file.read(0x01))
+            output.write(b'\xff')
+            file.seek(0x01, 1)
+            output.write(file.read(0x06))
 
 exit(1)
