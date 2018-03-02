@@ -2,7 +2,7 @@
 
 # FSHA File Specification
 
-FSHA files ?
+FSHA files define shaders
 
 ## FSHA File Layout
 
