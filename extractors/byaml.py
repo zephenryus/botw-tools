@@ -44,14 +44,17 @@ class BYML:
     data_object = []
     hash_table = {}
 
-    def __init__(self, path):
+    def __init__(self, path, temp_data=None):
         print("Parsing Binary YAML file...")
 
         filename = os.path.basename(path)
         print("Reading " + filename + "...")
 
-        file = open(path, 'rb')
-        self.data = file.read()
+        try:
+            file = open(path, 'rb')
+            self.data = file.read()
+        except PermissionError:
+            self.data = temp_data
 
         signature = self.data[0x00:0x02]
         version, node_names_table_offset, strings_table_offset, root_node \

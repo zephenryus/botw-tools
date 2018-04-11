@@ -120,6 +120,7 @@ def sarc_extract(data, mode, filename):
     pos = 6
 
     name, ext = os.path.splitext(filename)
+    parent_directory_name = name + ext.replace('s', '', 1)
 
     if mode == 1:  # Don"t need to check again with normal SARC
         magic1 = data[0:4]
@@ -208,7 +209,7 @@ def sarc_extract(data, mode, filename):
     print("Writing Files....")
 
     try:
-        os.mkdir(name)
+        os.mkdir(parent_directory_name)
     except OSError:
         print("Folder already exists, continuing....")
 
@@ -226,7 +227,7 @@ def sarc_extract(data, mode, filename):
     file_count = 0
 
     for x in range(node_count):
-        filename = os.path.join(name, strings[x])
+        filename = os.path.join(parent_directory_name, strings[x])
 
         if not os.path.exists(os.path.dirname(filename)):
             os.makedirs(os.path.dirname(filename))
@@ -236,39 +237,39 @@ def sarc_extract(data, mode, filename):
 
         if no_names:
             if filedata[0:4] == b"BNTX":
-                filename = name + "/" + "bntx" + str(bntx_count) + ".bntx"
+                filename = parent_directory_name + "/" + "bntx" + str(bntx_count) + ".bntx"
                 bntx_count += 1
 
             elif filedata[0:4] == b"BNSH":
-                filename = name + "/" + "bnsh" + str(bnsh_count) + ".bnsh"
+                filename = parent_directory_name + "/" + "bnsh" + str(bnsh_count) + ".bnsh"
                 bnsh_count += 1
 
             elif filedata[0:4] == b"FLAN":
-                filename = name + "/" + "bflan" + str(flan_count) + ".bflan"
+                filename = parent_directory_name + "/" + "bflan" + str(flan_count) + ".bflan"
                 flan_count += 1
 
             elif filedata[0:4] == b"FLYT":
-                filename = name + "/" + "bflyt" + str(flyt_count) + ".bflyt"
+                filename = parent_directory_name + "/" + "bflyt" + str(flyt_count) + ".bflyt"
                 flyt_count += 1
 
             elif filedata[-0x28:-0x24] == b"FLIM":
-                filename = name + "/" + "bflim" + str(flim_count) + ".bflim"
+                filename = parent_directory_name + "/" + "bflim" + str(flim_count) + ".bflim"
                 flim_count += 1
 
             elif filedata[0:4] == b"Gfx2":
-                filename = name + "/" + "gtx" + str(gtx_count) + ".gtx"
+                filename = parent_directory_name + "/" + "gtx" + str(gtx_count) + ".gtx"
                 gtx_count += 1
 
             elif filedata[0:4] == b"SARC":
-                filename = name + "/" + "sarc" + str(sarc_count) + ".sarc"
+                filename = parent_directory_name + "/" + "sarc" + str(sarc_count) + ".sarc"
                 sarc_count += 1
 
             elif filedata[0:4] == b"Yaz0":
-                filename = name + "/" + "szs" + str(szs_count) + ".szs"
+                filename = parent_directory_name + "/" + "szs" + str(szs_count) + ".szs"
                 szs_count += 1
 
             else:
-                filename = name + "/" + "file" + str(file_count)
+                filename = parent_directory_name + "/" + "file" + str(file_count)
                 file_count += 1
 
         print(filename)
@@ -277,6 +278,7 @@ def sarc_extract(data, mode, filename):
             f.write(filedata)
 
     print("Done!")
+    return parent_directory_name
 
 
 def main():

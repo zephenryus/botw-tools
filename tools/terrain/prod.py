@@ -12,14 +12,17 @@ import yaml
 class PrOD:
     data_object = {}
 
-    def __init__(self, path):
+    def __init__(self, path, temp_data=None):
         print("Parsing PrOD file...")
 
         filename = os.path.basename(path)
         print("Reading {0}...".format(filename))
 
-        file = open(path, 'rb')
-        self.data = file.read()
+        try:
+            file = open(path, 'rb')
+            self.data = file.read()
+        except PermissionError:
+            self.data = temp_data
 
         signature = self.data[0x00:0x04]
 
