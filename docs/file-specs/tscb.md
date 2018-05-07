@@ -33,20 +33,25 @@ struct TSCBHeader {
 | Offset | Length | Type | Description |
 |-------:|:------------:|------|-------------|
 | `0x00` | 4 | String       | TSCB file signature (magic) `54 53 43 42` or "TSCB" |
-| `0x04` | 2 | Unsigned Short | TSCB version?. `0A 00` or "10.0"<sup>[1](#reference-1)</sup> |
-| `0x06` | 2 | Unsigned Short | Unknown. `00 00` (Unsigned Short `0`) |
+| `0x04` | 4 | Unsigned Short | TSCB version?. `0A 00 00 00` or "10.0.0.0"<sup>[1](#reference-1)</sup> |
 | `0x08` | 4 | Unsigned Int | Unknown. `00 00 00 01` (Unsigned Int `1`) |
 | `0x0c` | 4 | Unsigned Int | `file_base` table relative offset (0x0c + offset) |
-| `0x10` | 4 | Float | Unknown `500.0`. See following notes. |
-| `0x14` | 4 | Float | Unknown `800.0`. See following notes. |
+| `0x10` | 4 | Float | `world_scale` `500.0`. See following notes. |
+| `0x14` | 4 | Float | Terrain Mesh Altitude `800.0` |
 | `0x18` | 4 | Unsigned Int | `material_info_array` length. Number of elements in array. |
 | `0x1c` | 4 | Unsigned Int | `area_array` length. Number of elements in array. |
-| `0x20` | 4 | Unknown | Unknown. `00 00 00 00` (Unsigned Int`0`) |
-| `0x24` | 4 | Unknown | Unknown. `00 00 00 00` (Unsigned Int`0`) |
-| `0x28` | 4 | Float | `world_scale`. Value used by `area_array` for tile size |
+| `0x20` | 4 | Unknown | Unknown. `00 00 00 00` (Unsigned Int`0`). Most likely padding. |
+| `0x24` | 4 | Unknown | Unknown. `00 00 00 00` (Unsigned Int`0`). Most likely padding. |
+| `0x28` | 4 | Float | Tile size `32`. |
 | `0x2c` | 4 | Unsigned Int | Unknown. `00 00 00 08` (Unsigned Int `8`) |
 
-The float values in `0x10` and `0x14` seem to be related to the size of the playable map area. The in game playable map is `-5000.0` to `5000.0` along the z-axis and `-8000.0` to `8000.0` along the x-axis. While `500.0` and `800.0` do not exactly map to those values, they do seem to be related.
+**TSCB Version**—game crashes on load screen if not equal to `0A 00 00 00`.
+
+**Unknown `0x08`**—game crashes on load screen if not equal to `00 00 00 01`.
+
+**Unknown `0x10`**—Scales the world along the x- and z-axis
+
+**Terrain Mesh Altitude**—Moves the terrain along the y-axis (up-and-down).
 
 ## Material Information Array
 
@@ -137,6 +142,15 @@ Every area includes a .hght and .mate file. The `extra_info_array` indicates if 
 [20, 3, 1, 1, 0, 3, 0, 1] = water, grass
 [ 3, 1, 1, 0]             = water
 [ 3, 0, 1, 0]             = grass
+```
+
+It seems that water is [3, 1, 1] and grass is [3, 0, 1]
+
+```
+[20, `3, 0, 1`, 0, `3, 1, 1`] = grass, water
+[20, `3, 1, 1`, 0, `3, 0, 1`] = water, grass
+[`3, 1, 1`, 0]                = water
+[`3, 0, 1`, 0]                = grass
 ```
 
 ## References
