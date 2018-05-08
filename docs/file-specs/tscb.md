@@ -32,39 +32,17 @@ struct TSCBHeader {
 | Offset | Length | Type | Description |
 |-------:|:------------:|------|-------------|
 | `0x00` | 4 | String       | TSCB file signature (magic) `54 53 43 42` or "TSCB" |
-| `0x04` | 4 | Unsigned Short | TSCB version?. `0A 00 00 00` or "10.0.0.0"<sup>[1](#reference-1)</sup> |
-| `0x08` | 4 | Unsigned Int | Unknown. `00 00 00 01` (Unsigned Int `1`) |
+| `0x04` | 4 | Unsigned Short | TSCB version?. `0A 00 00 00` or "10.0.0.0"<sup>[1](#reference-1)</sup>. game crashes on load screen if not equal to `0A 00 00 00`. |
+| `0x08` | 4 | Unsigned Int | Unknown. `00 00 00 01` (Unsigned Int `1`). game crashes on load screen if not equal to `00 00 00 01`. |
 | `0x0c` | 4 | Unsigned Int | `file_base` table relative offset (0x0c + offset) |
-| `0x10` | 4 | Float | `world_scale` `500.0` |
-| `0x14` | 4 | Float | Terrain Mesh Altitude `800.0` |
+| `0x10` | 4 | Float | `world_scale` `500.0`. Scales the world along the x- and z-axis. |
+| `0x14` | 4 | Float | Terrain Mesh Altitude `800.0`. Moves the terrain along the y-axis (up-and-down). |
 | `0x18` | 4 | Unsigned Int | `material_info_array` length. Number of elements in array. |
 | `0x1c` | 4 | Unsigned Int | `area_array` length. Number of elements in array. |
 | `0x20` | 4 | Unknown | Unknown. `00 00 00 00` (Unsigned Int`0`). Most likely padding. |
 | `0x24` | 4 | Unknown | Unknown. `00 00 00 00` (Unsigned Int`0`). Most likely padding. |
 | `0x28` | 4 | Float | Tile size `32`. |
-| `0x2c` | 4 | Unsigned Int | Unknown. `00 00 00 08` (Unsigned Int `8`) |
-
-#### Parameters
-
-##### TSCB Version
-
-game crashes on load screen if not equal to `0A 00 00 00`.
-
-##### Unknown `0x08`
-
-game crashes on load screen if not equal to `00 00 00 01`.
-
-##### Unknown `0x10`
-
-Scales the world along the x- and z-axis
-
-##### Terrain Mesh Altitude
-
-Moves the terrain along the y-axis (up-and-down).
-
-##### Unknown `0x2c`
-
-`1`, `2`, `4`, `5`, `6`, `8` Affects textures. `0`, `3`, `7`, `15`, `16` will crash the game
+| `0x2c` | 4 | Unsigned Int | Unknown. `00 00 00 08` (Unsigned Int `8`). `1`, `2`, `4`, `5`, `6`, `8` Affects textures. `0`, `3`, `7`, `15`, `16` will crash the game |
 
 ## Material Information Array
 
