@@ -15,17 +15,16 @@ TSCB files are **t**errain **sc**ene **b**inary files
 ```c
 struct TSCBHeader {
 	char           signature[4];
-	unsigned short version;
-	unsigned short unknown0x06;
+	unsigned int   version;
 	unsigned int   unknown0x08;
 	unsigned int   file_base_offset;
-	float          unknown0x10;
+	float          world_scale;
 	float          unknown0x14;
 	unsigned int   material_info_array_length;
 	unsigned int   area_array_length;
 	unsigned int   unknown0x20;
 	unsigned int   unknown0x24;
-	float          world_scale;
+	float          tile_size;
 	unsigned int   unknown0x2c;
 };
 ```
@@ -33,20 +32,39 @@ struct TSCBHeader {
 | Offset | Length | Type | Description |
 |-------:|:------------:|------|-------------|
 | `0x00` | 4 | String       | TSCB file signature (magic) `54 53 43 42` or "TSCB" |
-| `0x04` | 2 | Unsigned Short | TSCB version?. `0A 00` or "10.0"<sup>[1](#reference-1)</sup> |
-| `0x06` | 2 | Unsigned Short | Unknown. `00 00` (Unsigned Short `0`) |
+| `0x04` | 4 | Unsigned Short | TSCB version?. `0A 00 00 00` or "10.0.0.0"<sup>[1](#reference-1)</sup> |
 | `0x08` | 4 | Unsigned Int | Unknown. `00 00 00 01` (Unsigned Int `1`) |
 | `0x0c` | 4 | Unsigned Int | `file_base` table relative offset (0x0c + offset) |
-| `0x10` | 4 | Float | Unknown `500.0`. See following notes. |
-| `0x14` | 4 | Float | Unknown `800.0`. See following notes. |
+| `0x10` | 4 | Float | `world_scale` `500.0` |
+| `0x14` | 4 | Float | Terrain Mesh Altitude `800.0` |
 | `0x18` | 4 | Unsigned Int | `material_info_array` length. Number of elements in array. |
 | `0x1c` | 4 | Unsigned Int | `area_array` length. Number of elements in array. |
-| `0x20` | 4 | Unknown | Unknown. `00 00 00 00` (Unsigned Int`0`) |
-| `0x24` | 4 | Unknown | Unknown. `00 00 00 00` (Unsigned Int`0`) |
-| `0x28` | 4 | Float | `world_scale`. Value used by `area_array` for tile size |
+| `0x20` | 4 | Unknown | Unknown. `00 00 00 00` (Unsigned Int`0`). Most likely padding. |
+| `0x24` | 4 | Unknown | Unknown. `00 00 00 00` (Unsigned Int`0`). Most likely padding. |
+| `0x28` | 4 | Float | Tile size `32`. |
 | `0x2c` | 4 | Unsigned Int | Unknown. `00 00 00 08` (Unsigned Int `8`) |
 
-The float values in `0x10` and `0x14` seem to be related to the size of the playable map area. The in game playable map is `-5000.0` to `5000.0` along the z-axis and `-8000.0` to `8000.0` along the x-axis. While `500.0` and `800.0` do not exactly map to those values, they do seem to be related.
+#### Parameters
+
+##### TSCB Version
+
+game crashes on load screen if not equal to `0A 00 00 00`.
+
+##### Unknown `0x08`
+
+game crashes on load screen if not equal to `00 00 00 01`.
+
+##### Unknown `0x10`
+
+Scales the world along the x- and z-axis
+
+##### Terrain Mesh Altitude
+
+Moves the terrain along the y-axis (up-and-down).
+
+##### Unknown `0x2c`
+
+`1`, `2`, `4`, `5`, `6`, `8` Affects textures. `0`, `3`, `7`, `15`, `16` will crash the game
 
 ## Material Information Array
 
@@ -73,13 +91,11 @@ Each entry in the array contains an index and four attributes
 | Offset | Length | Type | Description |
 |-------:|:------------:|------|-------------|
 | `0x00` | 4 | Unsigned Int | Array index (`mat_index`) of `material_info_array` |
-| `0x04` | 4 | Float | Unknown |
-| `0x08` | 4 | Float | Unknown |
+| `0x04` | 4 | Float | Texture u-axis (x-axis) |
+| `0x08` | 4 | Float | Texture v-axis (y-axis) |
 | `0x0c` | 4 | Float | Unknown |
 | `0x10` | 4 | Float | Unknown |
 
-* Unknown 0x04 values range between (0.03-0.59)
-* Unknown 0x08 values range between (0.03-0.59)
 * Unknown 0x0c values range between (0-1)
 * Unknown 0x10 values range between (0.2-1.63)
 
@@ -103,12 +119,12 @@ Entries range from 0x30 to 0x54 depending on the size of `extra_info_array`
 |-------:|:------------:|------|-------------|
 | `0x00` | 4 | Float | X Position |
 | `0x04` | 4 | Float | Z Position |
-| `0x08` | 4 | Float | Scale? |
-| `0x0c` | 4 | Float | `area_min_height_ground` |
-| `0x10` | 4 | Float | `area_max_height_ground` |
-| `0x14` | 4 | Float | `area_min_height_water` |
-| `0x18` | 4 | Float | `area_max_height_water` |
-| `0x1c` | 4 | Unsigned Int | Unknown. Usually `0`, `1` or `2` |
+| `0x08` | 4 | Float | unknown - Inverse height scale? (lower numbers give greater height). Also seems that this is affected by `world_scale` in the header |
+| `0x0c` | 4 | Float | unknown - Affects grass density (0 is normal? higher numbers are more dense) |
+| `0x10` | 4 | Float | unknown |
+| `0x14` | 4 | Float | unknown |
+| `0x18` | 4 | Float | unknown |
+| `0x1c` | 4 | Unsigned Int | Unknown. Usually `0`, `1` or `2`, crashes on `4`, `16`. May be a flag for grass and water? `0` seems to indicate no water or grass.  |
 | `0x20` | 4 | Unsigned Int | `file_base`. Relative offset to file base name string |
 | `0x24` | 4 | Unsigned Int | Unknown. Usually `0` |
 | `0x28` | 4 | Unsigned Int | Unknown. Usually `0` |
@@ -137,6 +153,15 @@ Every area includes a .hght and .mate file. The `extra_info_array` indicates if 
 [20, 3, 1, 1, 0, 3, 0, 1] = water, grass
 [ 3, 1, 1, 0]             = water
 [ 3, 0, 1, 0]             = grass
+```
+
+It seems that water is [3, 1, 1] and grass is [3, 0, 1]
+
+```
+[20, `3, 0, 1`, 0, `3, 1, 1`] = grass, water
+[20, `3, 1, 1`, 0, `3, 0, 1`] = water, grass
+[`3, 1, 1`, 0]                = water
+[`3, 0, 1`, 0]                = grass
 ```
 
 ## References
