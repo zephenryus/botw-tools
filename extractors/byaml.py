@@ -150,8 +150,12 @@ class BYML:
                 offset = struct.unpack('>I', self.data[next_node + 0x04:next_node + 0x08])[0]
                 value = self.get_node(offset)
 
-            if key == 'HashId' or key == 'SRTHash':
+            # if key == 'HashId' or key == 'SRTHash':
+            if isinstance(value, int):
+                value = str(value)
                 if value in self.hash_table:
+                    print('that value is a hash!')
+                    print("matched {0} to {1}".format(value, self.hash_table[value]))
                     value = self.hash_table[value]
 
             dictionary[key] = value
@@ -193,21 +197,24 @@ class BYML:
         return array
 
     def get_hash_table(self):
-        file = open('C:\\botw-data\\src\\extractors\\hashed_names.txt', 'r')
-        data = file.read()
-        data = data.split('\n')
+        with open('C:\\botw-data\\src\\extractors\\hashed_names.txt', 'r', encoding='utf-8') as hash_str_file:
+            data = hash_str_file.read()
+            data = data.split('\n')
 
-        for index in range(0, len(data)):
-            self.hash_table[zlib.crc32(bytearray(data[index], 'utf-8'))] = data[index]
+            for index in range(0, len(data)):
+                str_hash = str(zlib.crc32(bytearray(data[index], 'utf-8')))
+                self.hash_table[str_hash] = data[index]
+                if data[index] == 'Item_Cook_A_01':
+                    print('Item_Cook_A_01', str_hash)
 
-        file = open('C:\\botw-data\\src\\extractors\\hash-number-appendix.txt', 'r')
-        data = file.read()
-        data = data.split('\n')
-
-        for index in range(0, len(data)):
-            self.hash_table[zlib.crc32(bytearray(data[index], 'utf-8'))] = data[index]
-
-        file.close()
+        # file = open('C:\\botw-data\\src\\extractors\\hash-number-appendix.txt', 'r')
+        # data = file.read()
+        # data = data.split('\n')
+        #
+        # for index in range(0, len(data)):
+        #     self.hash_table[zlib.crc32(bytearray(data[index], 'utf-8'))] = data[index]
+        #
+        # file.close()
 
 
 def main():
