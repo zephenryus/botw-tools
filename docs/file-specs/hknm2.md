@@ -54,3 +54,11 @@ The file header is followed by three segment headers that reference Havok classn
 ### Class Names
 
 The `__classnames__` segment is a list of Havok classes, presumably, used by the file.
+
+### Types
+
+Unused in Breath of the Wild.
+
+### Data
+
+The `__data__` segment contains the data used by Havok.
