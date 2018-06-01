@@ -56,15 +56,15 @@ The file header is followed by three segment headers that reference Havok classn
 The `__classnames__` segment is a list of Havok classes, presumably, used by the file. HKNM2 files include the following classes:
 
 - `hkClass`
-  - `hkClassMember`
-    - `hkClassEnum`
-      - `hkClassEnumItem`
-        - `hkRootLevelContainer`
-          - `hkaiNavMesh`
-          - `hkaiDirectedGraphExplicitCost`
-          - `hkaiStaticTreeNavMeshQueryMediator`
-            - `hkcdStaticAabbTree`
-            - `hkcdStaticTreeDefaultTreeStorage6`
+- `hkClassMember`
+- `hkClassEnum`
+- `hkClassEnumItem`
+- `hkRootLevelContainer`
+- `hkaiNavMesh`
+- `hkaiDirectedGraphExplicitCost`
+- `hkaiStaticTreeNavMeshQueryMediator`
+- `hkcdStaticAabbTree`
+- `hkcdStaticTreeDefaultTreeStorage6`
 
 ### Types
 
@@ -91,21 +91,11 @@ The `__data__` segment contains the data used by Havok to define [NavMeshes](htt
 - **`DataSection[1]`**—An unknown table that is related to `DataSection[0]`
 - **`DataSection[2]`**—An unknown table that is related to `DataSection[1]`
 
-#### `DataSection[0]`
+## `Data`
 
-#### `DataSection[1]`
+The data table is filled with multiple data objects / arrays.
 
-#### `DataSection[2]`
-
-#### `Data`
-
-The data table is filled with multiple data objects.
-
-#### array[0]
-
-Typing table?
-
-#### array[1]
+### array[0]
 
 NavMesh Faces
 
@@ -117,6 +107,8 @@ NavMesh Faces
 | `0x0a` | 2 | Short | User defined number of edges. |
 | `0x0c` | 2 | Short | Cluster index |
 | `0x0e` | 2 | Short | Always `CD CD`. Padding. |
+
+### array[1]
 
 NavMesh Edges
 
@@ -130,15 +122,13 @@ NavMesh Edges
 | `0x11` | 1 | Byte | Padding |
 | `0x12` | 2 | Short | Edge cost.  |
 
+### array[2]
+
 NavMesh Vertices
 
 | Offset | Length | Type | Description |
-|-------:|:------------:|------|-------------|
-| `0x00` | 4 | Float | x |
-| `0x04` | 4 | Float | y |
-| `0x08` | 4 | Float | z |
-| `0x0c` | 4 | Float | w |
-
-#### array[2]
-
-NavMesh Vertex
+|-------:|:-:|-------|-----|
+| `0x00` | 4 | Float | `x` |
+| `0x04` | 4 | Float | `y` |
+| `0x08` | 4 | Float | `z` |
+| `0x0c` | 4 | Float | `w` |
