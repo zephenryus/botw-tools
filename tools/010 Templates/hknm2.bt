@@ -1,0 +1,184 @@
+//------------------------------------------------
+//--- 010 Editor v8.0.1 Binary Template
+//
+//      File: 
+//   Authors: 
+//   Version: 
+//   Purpose: 
+//  Category: 
+// File Mask: 
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+BigEndian();
+
+typedef struct {
+    char signature[8];
+    uint unk00 <name="unknown", comment="User settable tags">;
+    uint unk01 <name="unknown">;
+    uint unk02 <name="unknown">;
+    uint unk03 <name="unknown">;
+    uint unk04 <name="unknown">;
+    uint pad00[3] <name="padding", hidden=true>;
+    char havok_version[16];
+    uint unk05 <name="unknown">;
+    uint unk06 <name="unknown">;
+    uint unk07 <name="unknown">;
+    uint pad01[3] <name="padding", hidden=true>;
+} Header <name="header">;
+
+typedef struct {
+    char name[20] <name="segment_name">;
+    uint segment_offset <format=hex>;
+    uint section_offset[6] <format=hex>;
+    uint pad00[4] <name="padding", hidden=true>;
+} SegmentHeader <name="segment_header">;
+
+typedef struct {
+    uint id;
+    char tab <hidden=true>;
+    string classname;
+} ClassName <name="classname", bgcolor=0xa0a070>;
+
+typedef struct {
+    while (
+        FTell() < classnamesSegmentHeader.segment_offset + classnamesSegmentHeader.section_offset[0]
+        && ReadByte(1) != -1
+    ) {
+        ClassName classname;
+    }
+} Classnames <name="classnames">;
+
+typedef struct {
+    while (FTell() < dataSegmentHeader.segment_offset + dataSegmentHeader.section_offset[1] && ReadByte() != -1) {
+        uint offset <format=hex>;
+    }
+} DataOffsetTable <name="dataOffsetTable">;
+
+typedef struct {
+    local int currPos;
+
+    while (FTell() < dataSegmentHeader.segment_offset + dataSegmentHeader.section_offset[2] && ReadByte() != -1) {
+        // struct unknownMetaTable0Entry {
+            int unk00 <format=hex>;
+            currPos = FTell();
+            FSeek(dataSegmentHeader.segment_offset + unk00);
+            int unk03;
+            FSeek(currPos);
+
+            int unk01;
+
+            int unk02 <format=hex>;
+            currPos = FTell();
+            FSeek(dataSegmentHeader.segment_offset + unk02);
+            int unk04;
+            FSeek(currPos);
+        // } UnknownMetaTable0Entry;
+    }
+} UnknownMetaTable0 <name="unknown table", bgcolor=0xccccf4>;
+
+typedef struct {
+    while (FTell() < dataSegmentHeader.segment_offset + dataSegmentHeader.section_offset[3] && ReadByte() != -1) {
+        // struct unknownMetaTable1Entry {
+            int unk00 <format=hex>;
+            int unk01;
+            int unk02;
+        // } UnknownMetaTable1Entry;
+    }
+} UnknownMetaTable1 <name="unknown table", bgcolor=0xf3e2cf>;
+
+typedef struct {
+    FSeek(dataSegmentHeader.segment_offset + dataSegmentHeader.section_offset[0]);
+    DataOffsetTable dataOffsetTable;
+
+    FSeek(dataSegmentHeader.segment_offset + dataSegmentHeader.section_offset[1]);
+    UnknownMetaTable0 unknownMetaTable0;
+
+    FSeek(dataSegmentHeader.segment_offset + dataSegmentHeader.section_offset[2]);
+    UnknownMetaTable1 unknownMetaTable1;
+} MetaData <name="fileMetaData">;
+
+typedef struct {
+    int unk <name="unknown">;
+    int length;
+    uint length_check <comment="Length check should be length + 0x80000000">;
+} ArraySize <name="array_size", fgcolor=0xffffff, bgcolor=0xccf2ff>;
+
+typedef struct {
+    Header header;
+    SegmentHeader classnamesSegmentHeader;
+    SegmentHeader typesSegmentHeader;
+    SegmentHeader dataSegmentHeader;
+
+    Classnames classnames;
+
+    MetaData metaData;
+
+    local int index = 0;
+
+    local int currPos = FTell();
+
+    struct data {
+        FSeek(dataSegmentHeader.segment_offset + metaData.dataOffsetTable.offset[index++]);
+        ArraySize unknownArraySize;
+
+        FSeek(dataSegmentHeader.segment_offset + metaData.dataOffsetTable.offset[index++]);
+        uint unk00;
+
+        FSeek(dataSegmentHeader.segment_offset + metaData.dataOffsetTable.offset[index++]);
+        uint unk01;
+        FSeek(dataSegmentHeader.segment_offset + metaData.dataOffsetTable.offset[index++]);
+        string navMeshName;
+
+        FSeek(dataSegmentHeader.segment_offset + metaData.dataOffsetTable.offset[index++]);
+        uint unk02;
+        FSeek(dataSegmentHeader.segment_offset + metaData.dataOffsetTable.offset[index++]);
+        string navMeshClassname;
+
+        FSeek(dataSegmentHeader.segment_offset + metaData.dataOffsetTable.offset[index++]);
+        uint unk03;
+        FSeek(dataSegmentHeader.segment_offset + metaData.dataOffsetTable.offset[index++]);
+        string clusterGraphName;
+
+        FSeek(dataSegmentHeader.segment_offset + metaData.dataOffsetTable.offset[index++]);
+        uint unk04;
+        FSeek(dataSegmentHeader.segment_offset + metaData.dataOffsetTable.offset[index++]);
+        string clusterGraphClassname;
+
+        FSeek(dataSegmentHeader.segment_offset + metaData.dataOffsetTable.offset[index++]);
+        uint unk05;
+        FSeek(dataSegmentHeader.segment_offset + metaData.dataOffsetTable.offset[index++]);
+        string queryMediatorName;
+
+        FSeek(dataSegmentHeader.segment_offset + metaData.dataOffsetTable.offset[index++]);
+        uint unk06;
+        FSeek(dataSegmentHeader.segment_offset + metaData.dataOffsetTable.offset[index++]);
+        string queryMediatorClassname;
+
+        local int i;
+        while (exists(metaData.dataOffsetTable.offset[index])) {
+            struct dataEntry {
+                FSeek(dataSegmentHeader.segment_offset + metaData.dataOffsetTable.offset[index++]);
+                ArraySize objectSize;
+            
+                FSeek(dataSegmentHeader.segment_offset + metaData.dataOffsetTable.offset[index++]);
+            
+                for (i = 0; i < objectSize.length; i++) {
+                    float val;
+                }
+            } DataEntry;
+        }
+
+        FSeek(currPos);
+    } Data <name="data", fgcolor=0x222222, bgcolor=0xffffff>;
+} hknm2 <bgcolor=0xffff00, name="Havok NavMesh">;
+
+
+void realignPointer(uint alignment) {
+    FSkip(alignment - (FTell() % alignment));
+}
+
+
+struct {
+    hknm2 file;
+} HKNM2;

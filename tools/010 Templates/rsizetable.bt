@@ -1,0 +1,37 @@
+//------------------------------------------------
+//--- 010 Editor v8.0.1 Binary Template
+//
+//      File: 
+//   Authors: 
+//   Version: 
+//   Purpose: 
+//  Category: 
+// File Mask: 
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+BigEndian();
+
+struct RSTB {
+	struct RSTB_HEADER {
+		char signature[4];
+		uint table_entry_count;
+		uint hash_conflict_count;
+	} rstb_header <name="header", bgcolor=0x8080ff>;
+
+	struct RESOURCE_TABLE {
+		struct RESOURCE {
+			uint hash_id <format=hex>;
+			uint file_size;
+		} resource[rstb_header.table_entry_count] <name="resource", optimize=false, bgcolor=0x00ffff>;
+	} resource_table <name="Resource Table", bgcolor=0x00ffff>;
+
+	struct HASH_CONFLICT_TABLE {
+		struct HASH_CONFLICT {
+			local int currPos = FTell();
+			string filename;
+			FSeek(currPos + 0x80);
+			uint file_size;
+		} hash_conflict[rstb_header.hash_conflict_count] <name="hash_conflict", optimize=false, bgcolor=0xffff00>;
+	} hash_conflict_table <name="Hash Conflict Table", bgcolor=0xffff00>;
+} rstb;

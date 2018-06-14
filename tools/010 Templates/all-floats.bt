@@ -1,0 +1,58 @@
+//------------------------------------------------
+//--- 010 Editor v8.0.1 Binary Template
+//
+//      File: 
+//   Authors: 
+//   Version: 
+//   Purpose: 
+//  Category: 
+// File Mask: 
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+BigEndian();
+
+struct TEST {
+	FSeek(0x3bec);
+	struct ENTITY {
+		uint index;
+		float x;
+		float y;
+		float z;
+		float unk00;
+		float unk01;
+		float unk02;
+		float unk03;
+		float unk04;
+		float unk05;
+		float unk06;
+		float unk07;
+		float unk08;
+		float unk09;
+		float unk10;
+		float padding;
+	} entity [121];
+
+    struct ENTITY2 {
+		uint index;
+		uint x;
+		uint y;
+		uint z;
+		uint unk00;
+		uint unk01;
+		uint unk02;
+		uint unk03;
+		uint unk04;
+		uint unk05;
+		uint unk06;
+		uint unk07;
+		uint unk08;
+		uint unk09;
+		uint unk10;
+		uint padding;
+	} entity2 [1];
+
+    while(FEof() == false) {
+        float val;
+    }
+} test;

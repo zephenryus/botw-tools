@@ -1,0 +1,66 @@
+//------------------------------------------------
+//--- 010 Editor v8.0.1 Binary Template
+//
+//      File: hknm2
+//   Authors: zephenryus
+//   Version: 1.0
+//   Purpose: Identify the mesh in a Havok NavMesh File
+//  ID Bytes: 57 E0 E0 57 10 C0 C0 10
+//------------------------------------------------
+BigEndian();
+
+struct hkaiNavMesh {
+    FSeek(0xe4);
+    int dataOffset <hidden=true>;
+    int offsetTableOffset <hidden=true>;
+
+    // Skip to index 14 and get 14-19
+    FSeek(dataOffset + offsetTableOffset + 14 * 0x04);
+    int faceArrayLengthOffset <hidden=true>;
+    int faceArrayDataOffset <hidden=true>;
+    int edgeArrayLengthOffset <hidden=true>;
+    int edgeArrayDataOffset <hidden=true>;
+    int verticesArrayLengthOffset <hidden=true>;
+    int verticesArrayDataOffset <hidden=true>;
+
+    FSeek(dataOffset + faceArrayLengthOffset + 0x04);
+    int faceArrayLength <hidden=true>;
+
+    FSeek(dataOffset + faceArrayDataOffset);
+
+    struct navMeshFace {
+        int startEdgeIndex;
+        int startUserEdgeIndex;
+        short numEdges;
+        short numUserEdges;
+        short clusterIndex;
+        ushort padding <hidden=true>;
+    } NavMeshFace[faceArrayLength] <name="NavMeshFace", bgcolor=cLtRed>;
+
+    FSeek(dataOffset + edgeArrayLengthOffset + 0x04);
+    int edgeArrayLength <hidden=true>;
+
+    FSeek(dataOffset + edgeArrayDataOffset);
+
+    struct navMeshEdge {
+        int vertexA;
+        int vertexB;
+        int oppositeEdge <comment="-1 implies this is a boundary edge">;
+        int oppositeFace <comment="-1 implies this is a boundary edge">;
+        ubyte flags <format=binary>;
+        ubyte padding <hidden=true>;
+        short userEdgeCost;
+    } NavMeshEdge[edgeArrayLength] <name="NavMeshEdge", bgcolor=cLtGreen>;
+
+    FSeek(dataOffset + verticesArrayLengthOffset + 0x04);
+    int verticesArrayLength <hidden=true>;
+
+    FSeek(dataOffset + verticesArrayDataOffset);
+
+    struct navMeshVertices {
+        float x;
+        float y;
+        float z;
+        float w;
+    } NavMeshVertices[verticesArrayLength] <name="NavMeshVertices", bgcolor=cLtAqua>;
+} HkaiNavMesh <name="hkaiNavMesh">;

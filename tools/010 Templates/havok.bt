@@ -1,0 +1,135 @@
+//------------------------------------------------
+//--- 010 Editor v8.0.1 Binary Template
+//
+//      File: havok.bt
+//   Authors: Mystixor
+//   Version: 1.0
+//   Purpose: BotW havok physics (hksc fork)
+//  Category: 
+// File Mask: 
+//  ID Bytes: 57 E0 E0 57 10 C0 C0 10
+//   History: 
+//------------------------------------------------
+BigEndian();
+
+local int currentHavok = 0;
+local uint nextHavok = 0;
+local int ptr = 0;
+local uint i;
+
+typedef struct {
+    local int pointer = FTell();
+    uint value <hidden=true>;
+
+    if (value != 0) {
+        FSeek(FTell() - 4);
+        uint nextHavokOffset;
+    } else {
+        FSeek(FTell() - 4);
+    }
+
+    uint bodyHeader[4];
+
+    for (i = 0; FTell() < (SectionOffsets[5] + offset + currentHavok) && i <= 5; i++) {
+        struct {
+            while(FTell() < (SectionOffsets[i] + offset + currentHavok)) {
+                float value1;
+            };
+        } dataSection;
+    };
+
+    nextHavok = value[0];
+} Data <bgcolor=0xA07070>;
+
+typedef struct
+{
+    local int pointer = FTell();
+    while(SectionOffsets[0] > FTell() - pointer + 6)
+    {
+        uint value;
+        char StringStart <hidden=true>;
+        struct {string String;} stringStruct <name="classname">;
+    };
+    while(FTell() % 16 != 0) {char endOfTable <hidden=true>;};
+} Classnames <bgcolor=0xA0A070>;
+
+typedef struct
+{
+    uint value <comment="Currently the \"types\" table does not seem to have any purpose.">;
+} Types <comment="Currently the \"types\" table does not seem to have any purpose.">;
+
+typedef struct
+{
+    char name[16];
+    uint maybeStringTerminator <hidden=true>;
+    uint offset <comment="Always absolute offset!">;
+    uint SectionOffsets[6] <comment="Always relative offsets to the absolute one above!">;
+    char placeholder[16] <hidden=true>;
+    ptr = FTell();
+    FSeek(currentHavok + offset);
+    if(name != "__classnames__")
+    {
+        if(name != "__types__")
+        {
+            Data table;
+        }
+        else
+        {
+            Types table;
+        }
+    }
+    else
+    {
+        Classnames table;
+    }
+    FSeek(ptr);
+}headers <bgcolor=0x008888>;
+
+typedef struct
+{
+	struct header
+	{
+        currentHavok = FTell();
+		char signature[8]; // 57 E0 E0 57 10 C0 C0 10	or	W√√W√Ä√Ä
+        uint userSettableTags;
+        uint version;
+        ubyte unknown0;
+        ubyte BOM;
+        ubyte unknown1;
+        ubyte unknown2;
+        uint PackFileSectionCount;
+        uint maybeSectionIndex;
+        uint padding[2] <hidden=true>;
+        char padding1[3] <hidden=true>;
+        char havok_version[17];
+        while(FEof() == false)
+        {
+            char test <hidden=true>;
+            if(test == '_')
+            {
+                FSeek(FTell()-1);
+                break;
+            }
+        }
+    } HEADER <name="header">;
+
+    struct body
+    {
+        headers classnames <name="classnames">;
+        headers types <name="types">;
+        headers data <name="data">;
+    } BODY <name="body">;
+} havok <bgcolor=0xFFFF00, name="Havok file">;
+
+struct
+{
+    while(FEof() == false)
+    {
+        havok file;
+        if(nextHavok != 0)
+        {
+            FSeek(nextHavok);
+        }
+        else {break;}
+    }
+}HAVOK;
